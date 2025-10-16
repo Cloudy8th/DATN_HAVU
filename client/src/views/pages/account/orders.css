@@ -1,0 +1,218 @@
+.loading{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    background-color: var(--bg-opacity);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.orders {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-section {
+    width: 80%;
+    display: grid;
+    gap: 10px;
+}
+
+.order-title {
+    width: 100%;
+}
+
+.order-title>h3 {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.order-component {
+    width: 100%;
+    background-color: var(--color-white);
+    padding: 20px 15px;
+    box-shadow: 0 2px 4px var(--color-box-shadow);
+    border-radius: var(--border-radius);
+}
+
+.order-header {
+    background-color: var(--color-white);
+    width: 100%;
+    box-shadow: 0 2px 4px var(--color-box-shadow);
+}
+
+.order-header .order-menu {
+    display: flex;
+}
+
+.order-menu .order-menu-item {
+    flex: 2;
+    text-align: center;
+    cursor: pointer;
+    padding: 10px 0;
+}
+
+.order-menu .order-menu-item>p {
+    font-size: 1.1rem;
+}
+
+.order-menu .order-menu-item.active {
+    color: var(--color-primary);
+    border-bottom: 2px solid var(--color-primary);
+}
+
+.order-search-box {
+    width: 100%;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    border-radius: var(--border-radius);
+    background-color: var(--color-white);
+    box-shadow: 0 2px 4px var(--color-box-shadow);
+}
+
+.order-search-box .search-icon {
+    padding: 0 10px;
+}
+
+.order-search-box .search-icon>i {
+    color: var(--color-grey);
+}
+
+.order-search-box .search-input>input {
+    border: none;
+}
+
+.order-search-box .search-input {
+    flex: 8;
+}
+
+.order-search-box .search-button>button {
+    background-color: transparent;
+    color: var(--color-primary);
+}
+
+.order-search-box .search-button {
+    position: relative;
+}
+
+.order-search-box .search-button::before {
+    border: 1px solid var(--color-border);
+    position: absolute;
+    content: "";
+    height: 50%;
+    top: 50%;
+    transform: translateY(-50%)
+}
+
+.order-body-content .content-header .order-status {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    color: var(--color-grey);
+}
+
+.order-body-content .content-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.order-body-content .content-body .product-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.order-body-content .content-body .product-info>img {
+    width: 60px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
+}
+
+.order-body-content .content-body .product-info .product-name {
+    width: inherit;
+    display: -webkit-box;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+.order-body-content .content-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 15px;
+}
+
+.order-body-content .content-footer .total-amount {
+    display: flex;
+    gap: 10px;
+}
+
+.order-body-content .content-footer .total-amount>span,
+.order-body-content .content-footer .total-amount>p {
+    font-size: 1.3rem;
+}
+
+.order-body-content .content-footer .total-amount>span {
+    color: var(--color-grey);
+}
+
+.order-body-content .content-footer .option {
+    display: flex;
+    gap: 10px;
+}
+
+.order-body-content .content-footer .option>button.btn-cancel{
+    background-color: rgba(255, 0, 0, 0.1);
+    color: red;
+    border: 1px solid red;
+}
+
+.order-status>p {
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.order-status.pending>p {
+    color: var(--color-orange);
+}
+
+.order-status.processed>p {
+    color: var(--color-yellow);
+}
+
+.order-status.shipping>p {
+    color: var(--color-blue);
+}
+
+.order-status.shipped>p {
+    color: var(--color-green);
+}
+
+.order-status.cancelled>p {
+    color: var(--color-red);
+}
+
+.order-status.paid>p {
+    color: var(--color-blue-violet);
+}
+
+.order-status.unpaid>p {
+    color: black;
+}

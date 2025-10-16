@@ -1,0 +1,120 @@
+.account {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-section {
+    background-color: var(--color-white);
+    padding: 20px 10px;
+    border-radius: var(--border-radius-page);
+    display: flex;
+    width: 70%;
+}
+
+.account-avatar {
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.account-avatar .account-img {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    display: grid;
+}
+
+.account-avatar .account-img>span {
+    text-align: center;
+    padding-top: 10px;
+    font-weight: 500;
+    font-size: 1.1rem;
+}
+
+.account-avatar .account-img>img {
+    width: inherit;
+    height: inherit;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+}
+
+.account-avatar .account-img>label {
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    border-radius: 50%;
+    top: 0;
+    left: 0;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.account-avatar .account-img>label>i {
+    display: none;
+    color: var(--color-white);
+}
+
+.account-avatar .account-img>label:hover {
+    background-color: var(--color-box-shadow);
+}
+
+.account-avatar .account-img>label:hover i {
+    display: block;
+}
+
+.account-info {
+    width: 70%;
+}
+
+.account-info .account-info-title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+}
+
+.account-info .account-info-title>h3 {
+    font-size: 1.5rem;
+}
+
+.account-info-row {
+    width: 100%;
+    display: flex;
+    gap: 20px;
+    padding: 10px 20px;
+    padding-right: 30px;
+}
+
+.account-info-row .info-content-item {
+    display: grid;
+    gap: 5px;
+    flex: 5;
+}
+
+.account-info-row .gender {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.account-info-row .radio-gender {
+    display: flex;
+    gap: 20px;
+}
+
+.account-btn {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.account-btn>button {
+    padding: 20px 50px;
+}

@@ -1,0 +1,254 @@
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-opacity);
+    z-index: 1000;
+}
+
+.cart {
+    padding: 20px 0;
+}
+
+.cart>h3 {
+    font-size: 1.6rem;
+    font-weight: 500;
+    padding-bottom: 20px;
+}
+
+.cart-info {
+    width: 70%;
+}
+
+.cart-header {
+    position: sticky;
+    top: var(--height-header);
+    z-index: 10;
+}
+
+.cart-header,
+.cart-content {
+    display: flex;
+    width: 100%;
+    background-color: var(--color-white);
+    padding: 10px 20px;
+    border-radius: var(--border-radius-page);
+    box-shadow: 0 2px 4px var(--color-box-shadow);
+    align-items: center;
+}
+
+.cart-name {
+    flex: 4;
+    text-align: left;
+}
+
+.cart-price {
+    flex: 1;
+    text-align: center;
+}
+
+.cart-quantity {
+    flex: 2;
+    text-align: center;
+}
+
+.cart-total {
+    flex: 2;
+    text-align: center;
+}
+
+.cart-option {
+    flex: 1;
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cart-option>button {
+    background-color: transparent;
+}
+
+.title-name {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.title-name>label,
+.title-price>p,
+.title-quantity>p,
+.title-total>p {
+    font-size: 1.1rem;
+}
+
+.title-price,
+.title-quantity,
+.title-total,
+.title-option {
+    color: var(--color-grey);
+}
+
+.title-option>i {
+    font-size: 1.1rem;
+}
+
+.cart-body {
+    padding-top: 10px;
+    display: grid;
+    gap: 10px;
+}
+
+.cart-body .cart-content .cart-content-name {
+    display: flex;
+    align-items: center;
+}
+
+.cart-body .cart-content .cart-content-name>img {
+    object-fit: cover;
+    width: 80px;
+}
+
+.cart-body .cart-content .cart-content-name>span {
+    width: inherit;
+    display: -webkit-box;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.cart-content-quantity {
+    display: grid;
+    gap: 5px;
+}
+
+.cart-content-quantity>p {
+    color: var(--color-red);
+    opacity: 0.8;
+}
+
+.select-quantity {
+    display: flex;
+    gap: 3px;
+    justify-content: center;
+
+}
+
+.select-quantity>button {
+    height: 30px;
+    width: 30px;
+    border: 1px solid var(--color-border);
+    background-color: unset;
+}
+
+.select-quantity>button:hover {
+    background-color: var(--color-greyish);
+}
+
+.select-quantity>input {
+    width: 60px;
+    height: 30px;
+    border-radius: var(--border-radius);
+    border: 1px solid var(--color-border);
+    outline: none;
+    text-align: center;
+}
+
+.cart-section {
+    display: flex;
+    gap: 10px;
+}
+
+.cart-sell {
+    width: 30%;
+    height: fit-content;
+    display: grid;
+    gap: 10px;
+    position: sticky;
+    top: 0;
+}
+
+.cart-sell-address,
+.cart-sell-voucher,
+.cart-sell-buy-now {
+    background-color: var(--color-white);
+    box-shadow: 0 2px 4px var(--color-box-shadow);
+    width: 100%;
+    padding: 20px;
+    border-radius: var(--border-radius-page);
+}
+
+.cart-sell-address .address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-sell-address .address-header>button {
+    background-color: transparent;
+}
+
+.cart-sell-address .address-content {
+    line-height: 23px;
+}
+
+.cart-sell-voucher {
+    display: grid;
+    gap: 10px;
+}
+
+.cart-sell-voucher .voucher-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-sell-voucher .voucher-content>input {
+    flex: 4;
+    border-radius: 10px;
+}
+
+.cart-sell-voucher .voucher-content>button {
+    border-radius: 10px;
+    flex: 1;
+}
+
+.buy-now-bill {
+    display: flex;
+    justify-content: space-between;
+    line-height: 25px;
+}
+
+.buy-now-bill .bill-title {
+    text-align: left;
+}
+
+.buy-now-bill .bill-value {
+    text-align: right;
+}
+
+.total-amount {
+    display: flex;
+    justify-content: space-between;
+}
+
+.total-amount>p:last-child {
+    text-align: right;
+}
+
+.buy-now-btn {
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+}
+
+.buy-now-btn>button {
+    width: 100%;
+}

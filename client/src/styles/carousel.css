@@ -1,0 +1,53 @@
+.carousel {
+    text-align: unset;
+}
+
+.carousel__viewport {
+    border-radius: var(--border-radius-page);
+}
+
+.carousel__item {
+    width: 100%;
+    font-size: 20px;
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-page);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.carousel__item>img {
+    object-fit: cover;
+    width: 100%;
+}
+
+.carousel__prev {
+    left: -15px;
+}
+
+.carousel__next {
+    right: -15px;
+}
+
+.carousel__prev,
+.carousel__next {
+    background-color: var(--color-white);
+    box-sizing: content-box;
+    border: 1px solid var(--color-border);
+    border-radius: 50%;
+}
+
+.carousel__pagination-button::after {
+    background-color: var(--color-primary);
+    border-radius: 10px;
+    height: 5px;
+}
+
+.carousel__pagination-button--active::after {
+    background-color: var(--color-green);
+    width: 20px;
+}
+
+.carousel__pagination-button:hover::after {
+    background-color: var(--color-primary-hover);
+}

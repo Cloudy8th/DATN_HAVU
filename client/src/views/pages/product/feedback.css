@@ -1,0 +1,97 @@
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-opacity);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.feedback__container {
+    background-color: var(--color-white);
+    padding: 20px;
+    border-radius: var(--border-radius-page);
+    box-shadow: 0 3px 3px var(--color-box-shadow);
+}
+
+.feedback__header {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding-bottom: 20px;
+}
+
+.feedback__header>button {
+    padding: 0 5px;
+    border: none;
+    background-color: transparent;
+}
+
+.feedback__header>h4 {
+    font-size: 1.3rem;
+    padding-top: 3px;
+}
+
+.feedback__body .feedback__content {
+    display: grid;
+    gap: 10px;
+}
+
+.feedback__body .feedback__content .feedback__list .feedback__item {
+    display: flex;
+    gap: 10px;
+}
+
+.feedback__body .feedback__content .feedback__list .feedback__item>img {
+    width: 70px;
+    border: 1px solid var(--color-border);
+}
+
+.feedback__body .feedback__content .feedback__list .feedback__item .feedback__info>h5 {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.feedback__body .feedback__content .feedback__list .feedback__item .feedback__info>p {
+    font-size: 1rem;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.feedback__body .feedback__content .feedback__list .feedback__rating {
+    display: flex;
+    gap: 10px;
+}
+
+.feedback__body .feedback__content .feedback__list .feedback__rating>label {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.feedback__body .feedback__content .feedback__list .feedback__comment {
+    display: grid;
+    gap: 10px;
+}
+
+.feedback__body .feedback__content .feedback__list .feedback__comment>textarea {
+    width: 100%;
+    min-height: 100px;
+    max-height: 100px;
+    padding: 10px;
+    border: 1px solid var(--color-border);
+}
+
+.feedback__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 20px;
+}
+
+.feedback__footer>button {
+    padding: 10px 30px;
+}

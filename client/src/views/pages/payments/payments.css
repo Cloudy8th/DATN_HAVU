@@ -1,0 +1,251 @@
+.loading {
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: var(--bg-opacity);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+}
+
+.payments-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.component-page {
+    padding: 20px;
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-page);
+    box-shadow: 0 2px 3px var(--color-box-shadow);
+}
+
+.address .address-title {
+    display: flex;
+    align-items: center;
+    color: var(--color-red);
+    gap: 5px;
+}
+
+.address .address-title>h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.address .address-title>i {
+    font-size: 1.2rem;
+}
+
+.address .address-content {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.address .address-content>b,
+.address .address-content>p {
+    font-size: 1.1rem;
+}
+
+.address .address-content>button {
+    background-color: unset;
+    color: var(--color-primary);
+}
+
+.address .address-content-change {
+    display: grid;
+    gap: 15px;
+    align-items: center;
+    padding-top: 10px;
+}
+
+.address .address-content-change>button {
+    width: 150px;
+}
+
+.product-info .product-info-title,
+.product-info .product-info-content {
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.product-info .product-info-title {
+    padding-bottom: 10px;
+}
+
+.product-info .product-info-title span {
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.product-info .product-info-title .title-price,
+.product-info .product-info-title .title-quantity,
+.product-info .product-info-title .title-total {
+    color: var(--color-grey);
+}
+
+.product-info .product-info-name {
+    flex: 4;
+}
+
+.product-info .product-info-name>img {
+    border: 1px solid var(--color-border);
+}
+
+.product-info .product-info-classify {
+    flex: 1;
+    text-align: center;
+}
+
+.product-info .product-info-price {
+    flex: 2;
+    text-align: center;
+}
+
+.product-info .product-info-quantity {
+    flex: 1;
+    text-align: center;
+}
+
+.product-info .product-info-total {
+    flex: 2;
+    text-align: right;
+}
+
+.product-info-content {
+    padding-bottom: 10px;
+}
+
+.product-info-content .content-name {
+    display: flex;
+    align-items: center;
+}
+
+.product-info-content .content-name>img {
+    object-fit: cover;
+    width: 50px;
+}
+
+.product-info-content .content-name>span {
+    width: inherit;
+    display: -webkit-box;
+    line-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-clamp: 1;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+}
+
+/* .product-info-content .content-classify {} */
+
+.product-info-content .content-classify>span {
+    color: var(--color-grey);
+}
+
+.vouchers {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding-top: 10px;
+    border-top: 2px dashed var(--color-border);
+}
+
+.vouchers .voucher-icon {
+    flex: 6;
+    justify-content: flex-end;
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.vouchers .voucher-icon>i {
+    font-size: 1.5rem;
+    color: var(--color-red);
+}
+
+.vouchers .voucher-icon>span {
+    font-size: 1.3rem;
+}
+
+.vouchers .voucher-btn {
+    flex: 4;
+    justify-content: flex-end;
+    display: flex;
+}
+
+.vouchers .voucher-btn>button {
+    background-color: unset;
+    color: var(--color-primary);
+}
+
+.payments-method .payments-method-header>h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+.payments-method .payments-method-body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.payments-method .payments-method-body .payments-method-item {
+    padding: 10px;
+    border: 1px solid var(--color-border);
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--color-red);
+    border-radius: var(--border-radius);
+}
+
+.payments-method .payments-method-body .payments-method-item>label {
+    font-size: 1.3rem;
+    display: block;
+    height: 100%;
+    cursor: pointer;
+}
+
+.line {
+    width: 100%;
+    margin: 20px 0;
+    border-top: 1px dashed var(--color-border);
+}
+
+.payments-method-footer {
+    padding: 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.payments-info {
+    display: flex;
+    gap: 50px;
+}
+
+.payments-info p {
+    font-size: 1.2rem;
+}
+
+.payments-info .payments-title>p {
+    text-align: left;
+    color: var(--color-grey);
+}
+
+.payments-info .payments-value>p {
+    text-align: right;
+}
+
+.payments-btn>button {
+    padding: 20px 40px;
+}

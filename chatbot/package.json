@@ -1,0 +1,24 @@
+{
+  "name": "chatbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "nodemon index.js"
+  },
+  "author": "Huy",
+  "license": "ISC",
+  "dependencies": {
+    "@google-ai/generativelanguage": "^2.1.0",
+    "@google-cloud/storage": "^7.8.0",
+    "@google/generative-ai": "^0.2.1",
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.18.3",
+    "google-auth-library": "^9.6.3",
+    "nodemon": "^3.1.0",
+    "openai": "^4.47.1"
+  }
+}
