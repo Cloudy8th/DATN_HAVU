@@ -67,5 +67,5 @@ mail:
           enable: true
 
 link:
-  frontend: ${URL_FRONTEND:http://localhost:3000}
-  order-details: ${URL_FRONTEND:http://localhost:3000}/order/detail/
+  frontend: http://localhost:6060/
+ 
