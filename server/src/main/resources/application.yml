@@ -46,26 +46,25 @@ jwt:
   secret-key: ${JWT_SECRET_KEY:default-secret-key}
 
 # AWS config (chỉ dùng nếu bạn upload file S3)
-cloud:
-  aws:
-    access-key: ${AWS_ACCESS_KEY:your-access-key}
-    secret-key: ${AWS_SECRET_KEY:your-secret-key}
-    region: ${AWS_REGION:ap-southeast-1}
-    bucket-name: ${AWS_BUCKET_NAME:tmart-bucket}
+#cloud:
+ # aws:
+  #  access-key: ${AWS_ACCESS_KEY:your-access-key}
+   # secret-key: ${AWS_SECRET_KEY:your-secret-key}
+    #region: ${AWS_REGION:ap-southeast-1}
+    #bucket-name: ${AWS_BUCKET_NAME:tmart-bucket}
 
 # Mail config (chỉ cần nếu bạn gửi email xác thực)
-mail:
-  host: smtp.gmail.com
-  port: 587
-  username: ${MAIL_USERNAME:your-email@gmail.com}
-  password: ${MAIL_PASSWORD:your-password}
-  properties:
-    mail:
-      smtp:
-        auth: true
-        starttls:
-          enable: true
+#mail:
+#  host: smtp.gmail.com
+ # port: 587
+  #username: ${MAIL_USERNAME:your-email@gmail.com}
+  #password: ${MAIL_PASSWORD:your-password}
+  #properties:
+   # mail:
+    #  smtp:
+     #   auth: true
+      #   enable: true
 
-link:
-  frontend: http://localhost:6060/
+#link:
+ # frontend: http://localhost:6060/
  
