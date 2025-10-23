@@ -52,7 +52,9 @@ public class OrderDetailService implements IOrderDetailService {
         OrderDetail orderDetail = getById(id);
         mapper.map(orderDetailDTO, orderDetail);
         Product product = productService.getById(orderDetailDTO.getProductId());
-        Order order = orderRepository.getById(orderDetailDTO.getOrderId());
+        Order order = orderRepository.findById(orderDetailDTO.getOrderId())
+                                     .orElseThrow(() -> new NotFoundException("Đơn hàng không tồn taị!",
+                                                                              "Order not found"));
         orderDetail.setProduct(product);
         orderDetail.setOrder(order);
         return orderDetailRepository.save(orderDetail);

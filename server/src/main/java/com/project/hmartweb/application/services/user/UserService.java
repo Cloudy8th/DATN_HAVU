@@ -1,6 +1,5 @@
 package com.project.hmartweb.application.services.user;
 
-import com.project.hmartweb.application.repositories.TokenRepository;
 import com.project.hmartweb.application.repositories.UserRepository;
 import com.project.hmartweb.application.responses.TokenResponse;
 import com.project.hmartweb.application.services.file.FileService;
@@ -42,7 +41,6 @@ public class UserService implements IUserService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final ITokenService tokenService;
-    private final TokenRepository tokenRepository;
     private final FileService fileService;
 
     @Override
@@ -177,8 +175,10 @@ public class UserService implements IUserService {
                                                                             .descending()), null);
         }
         BasePagination<User, UserRepository> pagination = new BasePagination<>();
+        int currentPage = page != null ? page : 0;
+        int currentPerPage = perPage != null ? perPage : 10;
         Page<User> users = userRepository
-                .findAllByDeleted(false, PageRequest.of(page, perPage, Sort.by("createdAt").descending()));
+                .findAllByDeleted(false, PageRequest.of(currentPage, currentPerPage, Sort.by("createdAt").descending()));
         return pagination.paginate(page, perPage, users);
     }
 

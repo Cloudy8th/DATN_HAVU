@@ -20,8 +20,6 @@ public class VNPayService {
         String vnp_OrderType = "other";
         String vnp_IpAddr = VNPayConfig.getIpAddress(request);
 
-        System.out.println(vnp_IpAddr);
-
         int amount = total*100;
 
 //    int amount = Integer.parseInt(req.getParameter("amount")) * 100;
@@ -51,14 +49,14 @@ public class VNPayService {
         vnp_Params.put("vnp_ExpireDate", vnp_ExpireDate);
 
         //Build data to hash and querystring
-        List fieldNames = new ArrayList(vnp_Params.keySet());
+        List<String> fieldNames = new ArrayList<>(vnp_Params.keySet());
         Collections.sort(fieldNames);
         StringBuilder hashData = new StringBuilder();
         StringBuilder query = new StringBuilder();
-        Iterator itr = fieldNames.iterator();
+        Iterator<String> itr = fieldNames.iterator();
         while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) vnp_Params.get(fieldName);
+            String fieldName = itr.next();
+            String fieldValue = vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 //Build hash data
                 hashData.append(fieldName);
@@ -82,18 +80,12 @@ public class VNPayService {
     }
 
     public int orderReturn(HttpServletRequest request) {
-        Map fields = new HashMap();
-        for (Enumeration params = request.getParameterNames(); params.hasMoreElements(); ) {
-            String fieldName = null;
-            String fieldValue = null;
-            try {
-                fieldName = URLEncoder.encode((String) params.nextElement(), StandardCharsets.US_ASCII.toString());
-                fieldValue = URLEncoder.encode(request.getParameter(fieldName), StandardCharsets.US_ASCII.toString());
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
-                fields.put(fieldName, fieldValue);
+        Map<String, String> fields = new HashMap<>();
+        for (Enumeration<String> params = request.getParameterNames(); params.hasMoreElements(); ) {
+            String name = params.nextElement();
+            String value = request.getParameter(name);
+            if (value != null && !value.isEmpty()) {
+                fields.put(name, value);
             }
         }
 

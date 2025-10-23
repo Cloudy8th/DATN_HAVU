@@ -25,7 +25,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
                              @Param("status") OrderStatus status,
                              @Param("keyword") String keyword);
 
-    @Query("SELECT NEW com.project.tmartweb.application.responses.Statistical(EXTRACT(MONTH FROM o.createdAt), SUM(o.totalMoney)) " +
+    @Query("SELECT NEW com.project.hmartweb.application.responses.Statistical(EXTRACT(MONTH FROM o.createdAt), SUM(o.totalMoney)) " +
             "FROM Order o " +
             "WHERE EXTRACT(YEAR FROM o.createdAt) = :year AND o.status = 'SHIPPED'" +
             "GROUP BY EXTRACT(MONTH FROM o.createdAt)")

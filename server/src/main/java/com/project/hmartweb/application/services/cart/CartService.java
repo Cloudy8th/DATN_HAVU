@@ -91,7 +91,12 @@ public class CartService implements ICartService {
         if (page == null && perPage == null) {
             return new PaginationDTO<>(cartRepository.findAllByUser_Id(userId, Sort.by("updatedAt").descending()), null);
         }
-        Page<Cart> pageRequest = cartRepository.findAllByUser_Id(userId, PageRequest.of(page, perPage, Sort.by("updatedAt").descending()));
+        int currentPage = page != null ? page : 0;
+        int currentPerPage = perPage != null ? perPage : 10;
+        Page<Cart> pageRequest = cartRepository.findAllByUser_Id(
+                userId,
+                PageRequest.of(currentPage, currentPerPage, Sort.by("updatedAt").descending())
+        );
         Pagination pagination = new Pagination(page, perPage, pageRequest.getTotalPages() - 1, pageRequest.getTotalElements());
         return new PaginationDTO<>(pageRequest.getContent(), pagination);
     }

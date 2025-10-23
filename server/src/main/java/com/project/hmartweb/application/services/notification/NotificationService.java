@@ -87,8 +87,12 @@ public class NotificationService implements INotificationService {
             return new PaginationDTO<>(notificationRepository.findAllByUserId(userId), null);
         }
         BasePagination<Notification, NotificationRepository> basePagination = new BasePagination<>(notificationRepository);
-        Page<Notification> pageNotifications = notificationRepository.findAllByUserId(userId,
-                PageRequest.of(page, perPage, Sort.by("createdAt").descending()));
+        int currentPage = page != null ? page : 0;
+        int currentPerPage = perPage != null ? perPage : 10;
+        Page<Notification> pageNotifications = notificationRepository.findAllByUserId(
+                userId,
+                PageRequest.of(currentPage, currentPerPage, Sort.by("createdAt").descending())
+        );
         return basePagination.paginate(page, perPage, pageNotifications);
     }
 

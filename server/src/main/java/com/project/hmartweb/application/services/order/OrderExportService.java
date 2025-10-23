@@ -30,10 +30,17 @@ public class OrderExportService implements IOrderExportService {
 
     @Override
     public void exportBillOrder(Order order, HttpServletResponse response) {
-        try (Document document = new Document(PageSize.A4)) {
+        Document document = null;
+        try {
+            // Set response headers before obtaining the OutputStream
+            response.setContentType("application/pdf");
+            response.setHeader(
+                    "Content-Disposition",
+                    "attachment; filename=bill_order_" + order.getId() + ".pdf"
+            );
 
+            document = new Document(PageSize.A4);
             PdfWriter.getInstance(document, response.getOutputStream());
-
             document.open();
             String fontPath = "src/main/resources/fonts/OpenSans.ttf";
             BaseFont baseFont = BaseFont.createFont(
@@ -75,6 +82,10 @@ public class OrderExportService implements IOrderExportService {
             document.add(table);
         } catch (DocumentException | IOException e) {
             throw new RuntimeException("Error occurred while generating PDF", e);
+        } finally {
+            if (document != null && document.isOpen()) {
+                document.close();
+            }
         }
     }
 

@@ -2,6 +2,8 @@ package com.project.hmartweb.config.security;
 
 import com.project.hmartweb.domain.entities.User;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 // import io.jsonwebtoken.io.Decoders; // REMOVE: Not used in 0.11.x
 // import io.jsonwebtoken.security.Keys; // REMOVE: Not used in 0.11.x
 import lombok.RequiredArgsConstructor;
@@ -47,23 +49,20 @@ public class JwtTokenProvider {
                 // FIX 4: Replace .expiration() with .setExpiration()
                 .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L)) 
                 // FIX 5: Use the String secret key for signing (0.11.x method)
-                .signWith(SignatureAlgorithm.HS256, secretKey) 
+                .signWith(getSecretKey(), SignatureAlgorithm.HS256) 
                 .compact();
     }
 
-    /*
-    // REMOVE: This method is not needed and uses the new API (0.12.x+)
-    private Key getSecretKey() {
+    private java.security.Key getSecretKey() {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
-    */
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .setSigningKey(secretKey)
-                // FIX 6: Remove the .build() call (not present in 0.11.x JwtParser)
-                .parseClaimsJws(token) 
+        return Jwts.parserBuilder()
+                .setSigningKey(getSecretKey())
+                .build()
+                .parseClaimsJws(token)
                 .getBody();
     }
 
@@ -87,9 +86,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         try {
-            // FIX 7: Simplify validation logic. The check is redundant if parseClaimsJws is called.
-            // Also, replace getSecretKey() (which we removed) with the secretKey String.
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token); 
+            Jwts.parserBuilder().setSigningKey(getSecretKey()).build().parseClaimsJws(token);
             
             // Check username *after* successful parsing/validation
             if (!username.equals(userDetails.getUsername())) {
@@ -104,7 +101,7 @@ public class JwtTokenProvider {
             logger.error("Unsupported JWT token: {}", ex.getMessage());
         } catch (IllegalArgumentException ex) {
             logger.error("JWT claims string is empty: {}", ex.getMessage());
-        } catch (SignatureException ex) {
+        } catch (io.jsonwebtoken.security.SignatureException ex) {
             logger.error("Invalid JWT signature: {}", ex.getMessage());
         }
         return false;

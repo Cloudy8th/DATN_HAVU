@@ -1,7 +1,6 @@
 package com.project.hmartweb.config.payment;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,6 @@ import java.util.Map;
 import java.util.Random;
 
 @Configuration
-@Log4j2
 public class VNPayConfig {
     private static final Logger log = LoggerFactory.getLogger(VNPayConfig.class);
     public static String vnpPayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
@@ -66,14 +64,14 @@ public class VNPayConfig {
     }
 
     //Util for VNPAY
-    public static String hashAllFields(Map fields) {
-        List fieldNames = new ArrayList(fields.keySet());
+    public static String hashAllFields(Map<String, String> fields) {
+        List<String> fieldNames = new ArrayList<>(fields.keySet());
         Collections.sort(fieldNames);
         StringBuilder sb = new StringBuilder();
-        Iterator itr = fieldNames.iterator();
+        Iterator<String> itr = fieldNames.iterator();
         while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) fields.get(fieldName);
+            String fieldName = itr.next();
+            String fieldValue = fields.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 sb.append(fieldName);
                 sb.append("=");

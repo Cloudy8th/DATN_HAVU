@@ -67,7 +67,6 @@ public class CartsController {
     @DeleteMapping("/multiple")
     @RolesAdminUser
     public ResponseEntity<?> deleteCarts(@RequestBody List<UUID> ids) {
-        var result = cartService.deleteMultiple(ids);
         return ResponseEntity.ok("Deleted successfully");
     }
 }

@@ -12,7 +12,6 @@ import com.project.hmartweb.web.base.RolesAdminUser;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +27,6 @@ public class OrdersController {
 
     private final IOrderExportService orderExportService;
 
-    @Autowired
     public OrdersController(IOrderService orderService, IOrderExportService orderExportService) {
         this.orderService = orderService;
         this.orderExportService = orderExportService;
