@@ -1,6 +1,5 @@
 <script lang="js" setup>
 import { Carousel, Navigation, Pagination } from 'vue3-carousel';
-import { defineProps } from "vue";
 // ---------------------- Props -------------------------
 const props = defineProps({
     autoplay: {
@@ -30,12 +29,15 @@ const props = defineProps({
 
 
 // ---------------------- Methods -----------------------
-
 </script>
 
 <template>
     <div :id="id">
-        <Carousel :autoplay="props.autoplay" :wrap-around="true" :breakpoints="props.breakpoints">
+        <Carousel
+            :autoplay="props.autoplay"
+            :wrap-around="true"
+            :breakpoints="props.breakpoints"
+        >
             <slot></slot>
 
             <template #addons>

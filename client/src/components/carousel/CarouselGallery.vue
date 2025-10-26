@@ -1,6 +1,6 @@
 <script lang="js" setup>
 import { Carousel, Navigation, Pagination, Slide } from 'vue3-carousel';
-import { defineProps, ref, reactive } from "vue";
+import { ref, reactive } from "vue";
 // ---------------------- Props -------------------------
 const props = defineProps({
     slides: {

@@ -105,7 +105,10 @@ watch(() => [price.value, feedback.value],  () => {
                     :key="item?.id"
                 >
                     <router-link
-                        :to="{ name: 'DetailProduct', params: { id: item.id } }"
+                        :to="{
+                            name: 'DetailProduct',
+                            params: { id: item?.id },
+                        }"
                         :title="item?.title"
                         class="product-item"
                     >

@@ -1,6 +1,5 @@
 server:
   port: 6060
-
 spring:
   output:
     ansi:
@@ -9,65 +8,37 @@ spring:
     multipart:
       max-file-size: 10MB
       max-request-size: 10MB
-
   messages:
     basename: i18n/messages
     encoding: utf-8
-
   datasource:
-    url: jdbc:postgresql://localhost:5432/hmartdb
-    username: postgres
-    password: 123456
-    driver-class-name: org.postgresql.Driver
-
+    url: jdbc:${POSTGRES_URL}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
-        "format_sql": true
+        format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-  sql:
-    init:
-      mode: always
-
-logging:
-  level:
-    "[org.hibernate.SQL]": DEBUG
-    "[org.hibernate.type.descriptor.sql.BasicBinder]": TRACE
-
 api:
   prefix: api/v1
-
 jwt:
   expiration: 604800 # 7 days
-  secret-key: VuThiThaiHa29082004@SecureKey!#%789XYZ
-
-
-# AWS config (chỉ dùng nếu bạn upload file S3)
-#cloud:
- # aws:
-  #  access-key: ${AWS_ACCESS_KEY:default-access-key}
-   # secret-key: ${AWS_SECRET_KEY:default-secret-key}
-    #region: ${AWS_REGION:us-east-1}
-    #bucket-name: ${AWS_BUCKET_NAME:default-bucket}
-
-# Mail config (chỉ cần nếu bạn gửi email xác thực)
-#mail:
- # host: ${MAIL_HOST:smtp.gmail.com}
-  #port: ${MAIL_PORT:587}
-  #username: ${MAIL_USERNAME:default-email@gmail.com}
-  #password: ${MAIL_PASSWORD:default-password}
-  #properties:
-    #mail:
-      #smtp:
-        #auth: true
-        #starttls:
-          #enable: true
-
-#link:
- # frontend: ${FRONTEND_URL:http://localhost:3000}
-  #order-details: ${ORDER_DETAILS_URL:http://localhost:3000/order-details}
- 
+  secret-key: ${JWT_SECRET_KEY}
+cloud:
+  aws:
+    access-key: ${AWS_ACCESS_KEY}
+    secret-key: ${AWS_SECRET_KEY}
+    region: ${AWS_REGION}
+    bucket-name: ${AWS_BUCKET_NAME}
+mail:
+  host: smtp.gmail.com
+  port: 587
+  username: ${MAIL_USERNAME}
+  password: ${MAIL_PASSWORD}
+link:
+  frontend: ${URL_FRONTEND}
+  order-details: ${URL_FRONTEND}/order/detail/

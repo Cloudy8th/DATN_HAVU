@@ -1,307 +1,278 @@
-import {
-    authenticate,
-    requireAdmin,
-    requireAuth,
-} from "@/middlewares/authenticate";
+import { authenticate, requireAdmin, requireAuth } from "@/middlewares/authenticate";
 import { createRouter, createWebHistory } from "vue-router";
 
 const routes = [
     {
-        path: "/",
-        name: "FrontSide",
-        component: () => import("@/views/layouts/TheFrontSide.vue"),
+        path: '/',
+        name: 'FrontSide',
+        component: () => import('@/views/layouts/TheFrontSide.vue'),
         children: [
             {
-                path: "/",
-                name: "Container",
-                component: () => import("@/views/layouts/TheContainer.vue"),
+                path: '/',
+                name: 'Container',
+                component: () => import('@/views/layouts/TheContainer.vue'),
                 children: [
                     {
-                        path: "/",
-                        name: "HomePage",
-                        component: () =>
-                            import("@/views/pages/home/HomePage.vue"),
+                        path: '/',
+                        name: 'HomePage',
+                        component: () => import('@/views/pages/home/HomePage.vue'),
                         meta: {
-                            title: "QPRO - Mua sắm online giá tốt",
-                        },
+                            title: 'TMart - Mua sắm online giá tốt',
+                        }
                     },
                     {
-                        path: "/product/:id",
-                        name: "DetailProduct",
-                        component: () =>
-                            import("@/views/pages/product/DetailProduct.vue"),
+                        path: '/product/:id',
+                        name: 'DetailProduct',
+                        component: () => import('@/views/pages/product/DetailProduct.vue'),
                         meta: {
-                            title: "QPRO - Mua sắm online giá tốt",
-                        },
+                            title: 'TMart - Mua sắm online giá tốt',
+                        }
                     },
                     {
-                        path: "/catalogry/:id",
-                        name: "ProductCatalogry",
-                        component: () =>
-                            import(
-                                "@/views/pages/catalogry/ProductCatalogry.vue"
-                            ),
+                        path: '/catalogry/:id',
+                        name: 'ProductCatalogry',
+                        component: () => import('@/views/pages/catalogry/ProductCatalogry.vue'),
                         meta: {
-                            title: "QPRO - Mua sắm online giá tốt",
-                        },
+                            title: 'TMart - Mua sắm online giá tốt',
+                        }
                     },
                     {
-                        path: "/payments",
-                        name: "Payments",
-                        component: () =>
-                            import("@/views/pages/payments/PaymentsPage.vue"),
+                        path: '/payments',
+                        name: 'Payments',
+                        component: () => import('@/views/pages/payments/PaymentsPage.vue'),
                         meta: {
-                            title: "Thanh toán",
+                            title: 'Thanh toán',
+                            authenticate: true
+                        }
+                    },
+                    {
+                        path: '/cart',
+                        name: 'CartPage',
+                        component: () => import('@/views/pages/cart/CartPage.vue'),
+                        meta: {
+                            title: 'Giỏ hàng',
                             authenticate: true,
-                        },
+                        }
                     },
                     {
-                        path: "/cart",
-                        name: "CartPage",
-                        component: () =>
-                            import("@/views/pages/cart/CartPage.vue"),
+                        path: '/account/edit',
+                        name: 'AccountPage',
+                        component: () => import('@/views/pages/account/AccountPage.vue'),
                         meta: {
-                            title: "Giỏ hàng",
-                            authenticate: true,
-                        },
+                            title: 'Tài khoản của tôi',
+                            authenticate: true
+                        }
                     },
                     {
-                        path: "/account/edit",
-                        name: "AccountPage",
-                        component: () =>
-                            import("@/views/pages/account/AccountPage.vue"),
+                        path: '/orders',
+                        name: 'OrdersPage',
+                        component: () => import('@/views/pages/account/OrdersPage.vue'),
                         meta: {
-                            title: "Tài khoản của tôi",
-                            authenticate: true,
-                        },
+                            title: 'Đơn hàng của tôi',
+                            authenticate: true
+                        }
                     },
                     {
-                        path: "/orders",
-                        name: "OrdersPage",
-                        component: () =>
-                            import("@/views/pages/account/OrdersPage.vue"),
+                        path: '/notifications',
+                        name: 'NotifyPage',
+                        component: () => import('@/views/pages/account/NotifyPage.vue'),
                         meta: {
-                            title: "Đơn hàng của tôi",
-                            authenticate: true,
-                        },
+                            title: 'Thông báo của tôi',
+                            authenticate: true
+                        }
                     },
                     {
-                        path: "/notifications",
-                        name: "NotifyPage",
-                        component: () =>
-                            import("@/views/pages/account/NotifyPage.vue"),
+                        path: '/order/detail/:id',
+                        name: 'OrderDetail',
+                        component: () => import('@/views/pages/account/OrderDetail.vue'),
                         meta: {
-                            title: "Thông báo của tôi",
-                            authenticate: true,
-                        },
+                            title: 'Chi tiết đơn hàng',
+                            authenticate: true
+                        }
                     },
                     {
-                        path: "/order/detail/:id",
-                        name: "OrderDetail",
-                        component: () =>
-                            import("@/views/pages/account/OrderDetail.vue"),
+                        path: '/product/best-seller',
+                        name: 'ProductBestSeller',
+                        component: () => import('@/views/pages/product/ProductBestSeller.vue'),
                         meta: {
-                            title: "Chi tiết đơn hàng",
-                            authenticate: true,
-                        },
+                            title: 'Sản phẩm bán chạy',
+                            authenticate: false
+                        }
                     },
                     {
-                        path: "/product/best-seller",
-                        name: "ProductBestSeller",
-                        component: () =>
-                            import(
-                                "@/views/pages/product/ProductBestSeller.vue"
-                            ),
+                        path: '/product/sale',
+                        name: 'ProductSale',
+                        component: () => import('@/views/pages/product/ProductSale.vue'),
                         meta: {
-                            title: "Sản phẩm bán chạy",
-                            authenticate: false,
-                        },
+                            title: 'Sản phẩm giảm giá',
+                            authenticate: false
+                        }
                     },
                     {
-                        path: "/product/sale",
-                        name: "ProductSale",
-                        component: () =>
-                            import("@/views/pages/product/ProductSale.vue"),
+                        path: '/product/search/:keyword',
+                        name: 'ProductSearch',
+                        component: () => import('@/views/pages/product/ProductSearch.vue'),
                         meta: {
-                            title: "Sản phẩm giảm giá",
-                            authenticate: false,
-                        },
+                            title: 'TMart - Mua sắm online giá tốt',
+                            authenticate: false
+                        }
                     },
                     {
-                        path: "/product/search/:keyword",
-                        name: "ProductSearch",
-                        component: () =>
-                            import("@/views/pages/product/ProductSearch.vue"),
+                        path: '/user/change-password',
+                        name: 'ChangePassword',
+                        component: () => import('@/views/pages/account/ChangePassword.vue'),
                         meta: {
-                            title: "QPRO - Mua sắm online giá tốt",
-                            authenticate: false,
-                        },
+                            title: 'Thay đổi mật khẩu',
+                            authenticate: true
+                        }
                     },
                     {
-                        path: "/user/change-password",
-                        name: "ChangePassword",
-                        component: () =>
-                            import("@/views/pages/account/ChangePassword.vue"),
+                        path: '/feedback/:id',
+                        name: 'Feedback',
+                        component: () => import('@/views/pages/product/FeedbackProduct.vue'),
                         meta: {
-                            title: "Thay đổi mật khẩu",
-                            authenticate: true,
-                        },
+                            title: 'Đánh giá sản phẩm',
+                            authenticate: true
+                        }
                     },
-                    {
-                        path: "/feedback/:id",
-                        name: "Feedback",
-                        component: () =>
-                            import("@/views/pages/product/FeedbackProduct.vue"),
-                        meta: {
-                            title: "Đánh giá sản phẩm",
-                            authenticate: true,
-                        },
-                    },
-                ],
+                ]
             },
-        ],
+        ]
     },
     {
-        path: "/admin",
-        name: "AdminSide",
-        component: () => import("@/views/layouts/TheAdminSide.vue"),
+        path: '/admin',
+        name: 'AdminSide',
+        component: () => import('@/views/layouts/TheAdminSide.vue'),
         meta: {
-            title: "Hệ thống quản trị",
+            title: 'Hệ thống quản trị',
             authenticate: true,
-            requireAdmin: true,
+            requireAdmin: true
         },
         children: [
             {
-                path: "",
-                name: "HomeAdmin",
-                component: () => import("@/views/admin/home/HomeAdmin.vue"),
+                path: '',
+                name: 'HomeAdmin',
+                component: () => import('@/views/admin/home/HomeAdmin.vue'),
                 meta: {
-                    title: "Hệ thống quản trị",
-                },
+                    title: 'Hệ thống quản trị',
+                }
             },
             {
-                path: "category",
-                name: "CategoryAdmin",
-                component: () =>
-                    import("@/views/admin/category/CategoryTable.vue"),
+                path: 'category',
+                name: 'CategoryAdmin',
+                component: () => import('@/views/admin/category/CategoryTable.vue'),
                 meta: {
-                    title: "Quản lý danh mục",
-                },
+                    title: 'Quản lý danh mục',
+                }
             },
             {
-                path: "coupon",
-                name: "CouponAdmin",
-                component: () => import("@/views/admin/coupon/CouponTable.vue"),
+                path: 'coupon',
+                name: 'CouponAdmin',
+                component: () => import('@/views/admin/coupon/CouponTable.vue'),
                 meta: {
-                    title: "Quản lý mã giảm giá",
-                },
+                    title: 'Quản lý mã giảm giá',
+                }
             },
             {
-                path: "gallery",
-                name: "GalleryAdmin",
-                component: () =>
-                    import("@/views/admin/gallery/GalleryTable.vue"),
+                path: 'gallery',
+                name: 'GalleryAdmin',
+                component: () => import('@/views/admin/gallery/GalleryTable.vue'),
                 meta: {
-                    title: "Quản lý trưng bày",
-                },
+                    title: 'Quản lý trưng bày',
+                }
             },
             {
-                path: "order",
-                name: "OrderAdmin",
-                component: () => import("@/views/admin/order/OrderTable.vue"),
+                path: 'order',
+                name: 'OrderAdmin',
+                component: () => import('@/views/admin/order/OrderTable.vue'),
                 meta: {
-                    title: "Quản lý đơn hàng",
-                },
+                    title: 'Quản lý đơn hàng',
+                }
             },
             {
-                path: "product",
-                name: "ProductAdmin",
-                component: () =>
-                    import("@/views/admin/product/ProductTable.vue"),
+                path: 'product',
+                name: 'ProductAdmin',
+                component: () => import('@/views/admin/product/ProductTable.vue'),
                 meta: {
-                    title: "Quản lý sản phẩm",
-                },
+                    title: 'Quản lý sản phẩm',
+                }
             },
             {
-                path: "user",
-                name: "UserAdmin",
-                component: () => import("@/views/admin/user/UserTable.vue"),
+                path: 'user',
+                name: 'UserAdmin',
+                component: () => import('@/views/admin/user/UserTable.vue'),
                 meta: {
-                    title: "Quản lý người dùng",
-                },
+                    title: 'Quản lý người dùng',
+                }
             },
-        ],
+        ]
     },
     {
-        path: "/payment-success",
-        name: "PaymentSuccess",
-        component: () => import("@/views/pages/payments/PaymentSuccess.vue"),
+        path: '/payment-success',
+        name: 'PaymentSuccess',
+        component: () => import('@/views/pages/payments/PaymentSuccess.vue'),
         meta: {
-            title: "Thanh toán",
-        },
+            title: 'Thanh toán'
+        }
     },
     {
-        path: "/login",
-        name: "Login",
-        component: () => import("@/views/pages/auth/LoginPage.vue"),
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/views/pages/auth/LoginPage.vue'),
         meta: {
-            title: "Đăng nhập",
-        },
+            title: 'Đăng nhập'
+        }
     },
     {
-        path: "/register",
-        name: "Register",
-        component: () => import("@/views/pages/auth/RegisterPage.vue"),
+        path: '/register',
+        name: 'Register',
+        component: () => import('@/views/pages/auth/RegisterPage.vue'),
         meta: {
-            title: "Đăng ký",
-        },
+            title: 'Đăng ký'
+        }
     },
     {
-        path: "/forbidden",
-        name: "Forbidden",
-        component: () => import("@/views/pages/forbidden/ForbiddenPage.vue"),
+        path: '/forbidden',
+        name: 'Forbidden',
+        component: () => import('@/views/pages/forbidden/ForbiddenPage.vue'),
         meta: {
-            title: "403 - FORBIDDEN",
-        },
+            title: '403 - FORBIDDEN'
+        }
     },
     {
-        path: "/:pathMatch(.*)*",
-        name: "NotFound",
-        component: () => import("@/views/pages/not-found/NotFoundPage.vue"),
+        path: '/:pathMatch(.*)*',
+        name: 'NotFound',
+        component: () => import('@/views/pages/not-found/NotFoundPage.vue'),
         meta: {
-            title: "404 - PAGE NOT FOUND",
-        },
+            title: '404 - PAGE NOT FOUND'
+        }
     },
-];
+]
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
     scrollBehavior(to, from, savedPosition) {
         if (savedPosition) {
-            return savedPosition;
+            return savedPosition
         } else {
             return {
-                top: 0,
-                behavior: "smooth",
-            };
+                top: 0, behavior: 'smooth',
+            }
         }
-    },
+    }
 });
 
 router.beforeEach(async (to, from, next) => {
     document.title = to.meta.title;
-    await authenticate();
-    const isLogin = !!localStorage.getItem("user");
-    if ((to.name === "Login" || to.name === "Register") && isLogin) {
-        next(from.fullPath);
-    } else if (to.meta.authenticate && !localStorage.getItem("user")) {
+    await authenticate()
+    if (to.meta.authenticate && !localStorage.getItem('user')) {
         requireAuth(to, from, next);
-    } else if (to.meta.requireAdmin) {
-        await requireAdmin(to, from, next);
-    } else {
-        next();
     }
-});
+    if (to.meta.requireAdmin) {
+        await requireAdmin(to, from, next);
+    }
+    next();
+})
 
 export default router;

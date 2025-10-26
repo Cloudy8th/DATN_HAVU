@@ -1,7 +1,7 @@
 <script setup>
 import { useGalleryStore } from "@/stores/gallery";
 import { storeToRefs } from "pinia";
-import { defineEmits, nextTick, defineProps, ref } from "vue";
+import { nextTick, ref } from "vue";
 
 const props = defineProps({
     statusForm: String,

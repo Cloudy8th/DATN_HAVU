@@ -68,7 +68,10 @@ nextTick(async () => {
     <div class="loading" v-if="loadingOrder">
         <spinner-loader />
     </div>
-    <div class="chart-container" v-if="!loadingOrder && chartData.datasets[0].data.length > 0">
+    <div
+        class="chart-container"
+        v-if="!loadingOrder && chartData.datasets[0].data.length > 0"
+    >
         <h3>Thống kê doanh thu</h3>
         <Line id="my-chart-id" :options="chartOptions" :data="chartData" />
     </div>
@@ -81,7 +84,7 @@ nextTick(async () => {
     left: 0;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
-    height: 100vh;
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;

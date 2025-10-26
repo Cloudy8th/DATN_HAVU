@@ -1,7 +1,7 @@
 <script setup>
 import { useCouponStore } from "@/stores/coupon";
 import { storeToRefs } from "pinia";
-import { defineEmits, defineProps, nextTick, reactive } from "vue";
+import { nextTick, reactive } from "vue";
 
 const emits = defineEmits(["closeModal"]);
 

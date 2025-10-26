@@ -1,31 +1,66 @@
 <template>
     <div class="chatbot">
         <div class="chatbot-icon" @click="showChatbot">
-            <img :src="require('@/assets/imgs/chatbot.png')" alt="">
+            <img src="@/assets/imgs/chatbot.png" alt="" />
         </div>
-        <div class="chatbot-box" v-if="isShowChatbot" v-click-outside="hideChatbot">
+        <div
+            class="chatbot-box"
+            v-if="isShowChatbot"
+            v-click-outside="hideChatbot"
+        >
             <div class="box-header">
                 <h4>Trợ lý AI</h4>
-                <b-button icon="fa-solid fa-xmark" @click="hideChatbot" title="Đóng"></b-button>
+                <b-button
+                    icon="fa-solid fa-xmark"
+                    @click="hideChatbot"
+                    title="Đóng"
+                ></b-button>
             </div>
             <div class="box-body">
-                <div class="body-content" ref="contentBox" @click="handleClickContentbox">
-                    <div v-for="(item, index) in data" :key="index"
-                        :class="[item.role == 'user' ? 'contentUser' : 'contentSystem', 'content-item']">
+                <div
+                    class="body-content"
+                    ref="contentBox"
+                    @click="handleClickContentbox"
+                >
+                    <div
+                        v-for="(item, index) in data"
+                        :key="index"
+                        :class="[
+                            item.role == 'user'
+                                ? 'contentUser'
+                                : 'contentSystem',
+                            'content-item',
+                        ]"
+                    >
                         <!-- <span class="time">{{ `${new Date(Date.now()).getHours()} : ${new
             Date(Date.now()).getMinutes()}` }}</span> -->
                         <div class="content-data">
                             <pre>{{ item.content }}</pre>
                         </div>
-                        <dots-loader class="dots-loader"
-                            v-if="isLoading && item.role == 'user' && index === data.length - 1"></dots-loader>
+                        <dots-loader
+                            class="dots-loader"
+                            v-if="
+                                isLoading &&
+                                item.role == 'user' &&
+                                index === data.length - 1
+                            "
+                        ></dots-loader>
                     </div>
                 </div>
             </div>
             <div class="box-footer">
                 <div class="box-message">
-                    <b-input ref="inputBox" type="text" v-model="contentUser" @keydown.enter=clickChat></b-input>
-                    <b-button :disabled="isLoading" icon="fa-solid fa-circle-arrow-right" @click="clickChat"></b-button>
+                    <b-input
+                        ref="inputBox"
+                        type="text"
+                        v-model="contentUser"
+                        @keydown.enter="clickChat"
+                    ></b-input>
+                    <b-button
+                        :disabled="isLoading"
+                        icon="fa-solid fa-circle-arrow-right"
+                        @click="clickChat"
+                    ></b-button>
                 </div>
             </div>
         </div>
@@ -33,8 +68,8 @@
 </template>
 
 <script setup>
-import { ref, nextTick, onUpdated } from 'vue';
-import { chatbot } from '@/apis/services/chatbot';
+import { ref, nextTick, onUpdated } from "vue";
+import { chatbot } from "@/apis/services/chatbot";
 
 // ------------------------- Khai báo biến ----------------------
 const isShowChatbot = ref(false);
@@ -51,7 +86,7 @@ onUpdated(() => {
             contentBox.value.scrollTop = contentBox.value.scrollHeight;
         }
     });
-})
+});
 // ------------------------ Watcher -----------------------------
 
 // ------------------------ Hàm xử lý ---------------------------
@@ -59,11 +94,11 @@ const showChatbot = () => {
     isShowChatbot.value = true;
     nextTick(() => {
         inputBox.value.focus();
-    })
-}
+    });
+};
 const hideChatbot = () => {
     isShowChatbot.value = false;
-}
+};
 const clickChat = async () => {
     const content = contentUser.value.trim();
     const newData = [...data.value];
@@ -72,23 +107,23 @@ const clickChat = async () => {
         isLoading.value = true;
         newData.push({
             role: "user",
-            content: content
+            content: content,
         });
         data.value = newData;
         try {
             const res = await chatbot(content);
             if (res) {
                 newData.push({
-                    role: 'bot',
-                    content: res
+                    role: "bot",
+                    content: res,
                 });
                 console.log(res);
                 data.value = newData;
             }
         } catch (error) {
             newData.push({
-                role: 'bot',
-                content: 'Đã xảy ra lỗi! Vui lòng thử lại.'
+                role: "bot",
+                content: "Đã xảy ra lỗi! Vui lòng thử lại.",
             });
             data.value = newData;
             console.error(error);
@@ -96,11 +131,11 @@ const clickChat = async () => {
             isLoading.value = false;
         }
     }
-}
+};
 
 const handleClickContentbox = () => {
     inputBox.value.focus();
-}
+};
 </script>
 
 <style scoped>
@@ -119,7 +154,7 @@ const handleClickContentbox = () => {
     position: relative;
 }
 
-.chatbot-icon>img {
+.chatbot-icon > img {
     width: inherit;
     height: inherit;
     object-fit: contain;
@@ -152,12 +187,12 @@ const handleClickContentbox = () => {
     border-top-right-radius: var(--border-radius);
 }
 
-.box-header>h4 {
+.box-header > h4 {
     padding-left: 10px;
     color: var(--color-primary);
 }
 
-.box-header>button {
+.box-header > button {
     background-color: transparent;
 }
 
@@ -172,19 +207,19 @@ const handleClickContentbox = () => {
     padding: 5px 0;
 }
 
-.box-body .body-content>.content-item {
+.box-body .body-content > .content-item {
     width: 75%;
     margin: 5px;
 }
 
-.box-body .body-content .content-item>.content-data {
+.box-body .body-content .content-item > .content-data {
     width: fit-content;
     max-width: 100%;
     padding: 8px 10px;
     border-radius: var(--border-radius-page);
 }
 
-.box-body .body-content .content-item .content-data>pre {
+.box-body .body-content .content-item .content-data > pre {
     width: inherit;
     text-wrap: wrap;
     font-size: 1rem;
@@ -194,12 +229,12 @@ const handleClickContentbox = () => {
     float: left;
 }
 
-.contentSystem>.content-data {
+.contentSystem > .content-data {
     background-color: var(--bg-main);
     float: left;
 }
 
-.contentSystem .content-data>h5 {
+.contentSystem .content-data > h5 {
     color: var(--color-primary);
     font-size: 0.9rem;
     padding-bottom: 5px;
@@ -217,7 +252,7 @@ const handleClickContentbox = () => {
     left: -30%;
 }
 
-.contentUser>.content-data {
+.contentUser > .content-data {
     float: right;
     background-color: var(--color-primary);
     color: var(--color-white);
@@ -247,11 +282,11 @@ const handleClickContentbox = () => {
     outline: 1px solid var(--color-primary-focus);
 }
 
-.box-footer .box-message>input {
+.box-footer .box-message > input {
     border: none;
 }
 
-.box-footer .box-message>button {
+.box-footer .box-message > button {
     border-radius: var(--border-radius);
     width: 34px;
     height: 34px;

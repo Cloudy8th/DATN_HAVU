@@ -4,7 +4,7 @@ import { toastify } from "@/helpers/toastify";
 import { useCategoryStore } from "@/stores/category";
 import { useProductStore } from "@/stores/product";
 import _ from "lodash";
-import { defineEmits, nextTick, reactive, ref, defineProps, toRaw } from "vue";
+import { nextTick, reactive, ref, toRaw } from "vue";
 
 const props = defineProps({
     statusForm: String,
@@ -89,10 +89,6 @@ const changeImg = (event) => {
 };
 
 const handleSubmit = async () => {
-    if (productData.quantity < 0) {
-        dialog("Lỗi", "error", "Số lượng phải lớn hơn 0");
-        return;
-    }
     if (productData.originPrice < productData.salePrice) {
         dialog("Lỗi", "error", "Giá giảm giá phải nhỏ hơn giá bán");
         return;
@@ -159,50 +155,113 @@ const removeImage = (id) => {
             <div class="modal-body">
                 <form @submit.prevent="handleSubmit" class="row g-3 form-group">
                     <div class="form-item col-md-6">
-                        <label for="title" class="form-label">Tên sản phẩm</label>
-                        <input v-model="productData.title" type="text" class="form-control" id="title" required />
+                        <label for="title" class="form-label"
+                            >Tên sản phẩm</label
+                        >
+                        <input
+                            v-model="productData.title"
+                            type="text"
+                            class="form-control"
+                            id="title"
+                            required
+                        />
                     </div>
                     <div class="form-item col-md-6">
-                        <label for="category" class="form-label">Danh mục sản phẩm</label>
-                        <select v-model="productData.categoryId" class="form-select" id="category" required>
-                            <option v-for="category in categoriesData" :value="category.id" :key="category.id">
+                        <label for="category" class="form-label"
+                            >Danh mục sản phẩm</label
+                        >
+                        <select
+                            v-model="productData.categoryId"
+                            class="form-select"
+                            id="category"
+                            required
+                        >
+                            <option
+                                v-for="category in categoriesData"
+                                :value="category.id"
+                                :key="category.id"
+                            >
                                 {{ category.name }}
                             </option>
                         </select>
                     </div>
                     <div class="form-item col-md-4">
-                        <label for="originPrice" class="form-label">Giá sản phẩm</label>
-                        <input v-model="productData.originPrice" type="number" class="form-control" id="originPrice"
-                            required />
+                        <label for="originPrice" class="form-label"
+                            >Giá sản phẩm</label
+                        >
+                        <input
+                            v-model="productData.originPrice"
+                            type="number"
+                            class="form-control"
+                            id="originPrice"
+                            required
+                        />
                     </div>
                     <div class="form-item col-md-4">
-                        <label for="sale" class="form-label">Giá giảm giá</label>
-                        <input v-model="productData.salePrice" type="number" class="form-control" id="sale" required />
+                        <label for="sale" class="form-label"
+                            >Giá giảm giá</label
+                        >
+                        <input
+                            v-model="productData.salePrice"
+                            type="number"
+                            class="form-control"
+                            id="sale"
+                            required
+                        />
                     </div>
                     <div class="form-item col-md-4">
-                        <label for="quantity" class="form-label">Số lượng</label>
-                        <input v-model="productData.quantity" type="number" class="form-control" id="quantity"
-                            required />
+                        <label for="quantity" class="form-label"
+                            >Số lượng</label
+                        >
+                        <input
+                            v-model="productData.quantity"
+                            type="number"
+                            class="form-control"
+                            id="quantity"
+                            required
+                        />
                     </div>
 
                     <div class="form-item col-md-12">
-                        <label for="description" class="form-label">Mô tả</label>
-                        <textarea v-model="productData.description" type="text" class="form-control" id="description"
-                            required></textarea>
+                        <label for="description" class="form-label"
+                            >Mô tả</label
+                        >
+                        <textarea
+                            v-model="productData.description"
+                            type="text"
+                            class="form-control"
+                            id="description"
+                            required
+                        ></textarea>
                     </div>
                     <div class="form-item product-choose-images col-md-12">
-                        <label for="images" class="form-label">Ảnh sản phẩm</label>
-                        <input @change="changeImg($event)" multiple="multiple" type="file" class="form-control"
-                            id="images" style="display: none" />
+                        <label for="images" class="form-label"
+                            >Ảnh sản phẩm</label
+                        >
+                        <input
+                            @change="changeImg($event)"
+                            multiple="multiple"
+                            type="file"
+                            class="form-control"
+                            id="images"
+                            style="display: none"
+                        />
                         <label for="images" class="form-label btn-choose-img">
                             <i class="fa-regular fa-folder-open"></i>
                             <span>Chọn ảnh</span>
                         </label>
                     </div>
                     <div class="form-item product-images col-md-12">
-                        <div class="product-images-item" v-for="image in productImages" :key="image.id">
+                        <div
+                            class="product-images-item"
+                            v-for="image in productImages"
+                            :key="image.id"
+                        >
                             <img :src="image.url" alt="" />
-                            <div class="remove-image" @click="removeImage(image.id)">
+                            <div
+                                class="remove-image"
+                                @click="removeImage(image.id)"
+                            >
                                 <i class="fa-solid fa-xmark"></i>
                             </div>
                         </div>

@@ -14,7 +14,7 @@
 </template>
 
 <script setup>
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 
 // ---------------------- Props ----------------------
 const props = defineProps({

@@ -24,7 +24,6 @@ const onSubmit = () => {
     }
     authStore.fetchRegister(user);
 }
-
 </script>
 
 <template>
@@ -38,7 +37,11 @@ const onSubmit = () => {
                             <div class="col-12">
                                 <div class="text-center mb-5">
                                     <router-link :to="{ name: 'HomePage' }">
-                                        <img :src="require('@/assets/imgs/logo.png')" alt="Logo" width="150">
+                                        <img
+                                            src="@/assets/imgs/TMart-logo.png"
+                                            alt="Logo"
+                                            width="150"
+                                        />
                                     </router-link>
                                 </div>
                             </div>
@@ -46,53 +49,103 @@ const onSubmit = () => {
                         <form @submit.prevent="onSubmit">
                             <div class="row gy-3 gy-md-4 overflow-hidden">
                                 <div class="col-12">
-                                    <label for="email" class="d-block form-label">Email <span
-                                            class="text-danger">*</span></label>
+                                    <label
+                                        for="email"
+                                        class="d-block form-label"
+                                        >Email
+                                        <span class="text-danger"
+                                            >*</span
+                                        ></label
+                                    >
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i class="fa-solid fa-user"></i>
                                         </span>
-                                        <input v-model="user.email" placeholder="Email" type="email"
-                                            class="form-control" name="email" id="email" required>
+                                        <input
+                                            v-model="user.email"
+                                            placeholder="Email"
+                                            type="email"
+                                            class="form-control"
+                                            name="email"
+                                            id="email"
+                                            required
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <label for="password" class="d-block form-label">Mật khẩu <span
-                                            class="text-danger">*</span></label>
+                                    <label
+                                        for="password"
+                                        class="d-block form-label"
+                                        >Mật khẩu
+                                        <span class="text-danger"
+                                            >*</span
+                                        ></label
+                                    >
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i class="fa-solid fa-key"></i>
                                         </span>
-                                        <input v-model="user.password" placeholder="********" type="password"
-                                            class="form-control" name="password" id="password" value="" required>
+                                        <input
+                                            v-model="user.password"
+                                            placeholder="********"
+                                            type="password"
+                                            class="form-control"
+                                            name="password"
+                                            id="password"
+                                            value=""
+                                            required
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <label for="confirmPassword" class="d-block form-label">Nhập lại mật khẩu <span
-                                            class="text-danger">*</span></label>
+                                    <label
+                                        for="confirmPassword"
+                                        class="d-block form-label"
+                                        >Nhập lại mật khẩu
+                                        <span class="text-danger"
+                                            >*</span
+                                        ></label
+                                    >
                                     <div class="input-group">
                                         <span class="input-group-text">
                                             <i class="fa-solid fa-key"></i>
                                         </span>
-                                        <input v-model="confirmPassword" placeholder="********" type="password"
-                                            class="form-control" name="confirmPassword" id="confirmPassword" value=""
-                                            required>
+                                        <input
+                                            v-model="confirmPassword"
+                                            placeholder="********"
+                                            type="password"
+                                            class="form-control"
+                                            name="confirmPassword"
+                                            id="confirmPassword"
+                                            value=""
+                                            required
+                                        />
                                     </div>
                                 </div>
                                 <div class="col-12">
                                     <div class="d-grid">
-                                        <button class="btn btn-primary btn-lg" type="submit">Đăng ký</button>
+                                        <button
+                                            class="btn btn-primary btn-lg"
+                                            type="submit"
+                                        >
+                                            Đăng ký
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </form>
                         <div class="row">
                             <div class="col-12">
-                                <hr class="mt-5 mb-4 border-secondary-subtle">
-                                <div class="d-flex gap-1 gap-md-1 flex-column flex-md-row justify-content-md-center">
+                                <hr class="mt-5 mb-4 border-secondary-subtle" />
+                                <div
+                                    class="d-flex gap-1 gap-md-1 flex-column flex-md-row justify-content-md-center"
+                                >
                                     Đã có tài khoản?
-                                    <router-link :to="{ name: 'Login' }" class="link-secondary
-                                        text-decoration-none">Đăng nhập</router-link>
+                                    <router-link
+                                        :to="{ name: 'Login' }"
+                                        class="link-secondary text-decoration-none"
+                                        >Đăng nhập</router-link
+                                    >
                                 </div>
                             </div>
                         </div>

@@ -1,14 +1,14 @@
 @import url(./grid.css);
-@import "~@fortawesome/fontawesome-free/css/all.min.css";
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 @import "bootstrap/dist/css/bootstrap.min.css";
 @import "vue3-carousel/dist/carousel.css";
 @import "./carousel.css";
 
 :root {
-    --color-primary: #ffa500;
-    --color-primary-hover: #ffd042;
-    --color-primary-focus: #c87004;
-    --color-primary-opacity: rgba(255, 191, 73, 0.2);
+    --color-primary: #006fff;
+    --color-primary-hover: #4696ff;
+    --color-primary-focus: #0138ff;
+    --color-primary-opacity: rgba(59, 144, 255, 0.2);
     --color-white: #ffff;
     --color-text: #27272a;
     --color-greyish: #ccc;
@@ -26,7 +26,7 @@
     --color-blue-violet: #8a2be2;
 
     --bg-main: #f5f5fa;
-    --bg-footer: #ffa500;
+    --bg-footer: #006fff;
     --bg-opacity: rgba(172, 172, 172, 0.6);
 
     --width-sidebar: 250px;

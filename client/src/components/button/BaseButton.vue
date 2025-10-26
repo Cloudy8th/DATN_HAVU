@@ -1,21 +1,5 @@
-<template>
-    <button
-        :style="'color:' + props.color"
-        ref="refBtn"
-        :class="[btnType(props.type), { 'focus-visible': focusVisible }]"
-    >
-        <i
-            v-if="icon != null"
-            :class="[icon]"
-            :style="'color:' + props.color"
-        ></i>
-        {{ props.value }}
-        <slot></slot>
-    </button>
-</template>
-
 <script setup>
-import { ref, defineProps, defineExpose } from "vue";
+import { ref } from "vue";
 const props = defineProps({
     value: {
         type: String,
@@ -60,6 +44,22 @@ defineExpose({
     focus,
 });
 </script>
+
+<template>
+    <button
+        :style="'color:' + props.color"
+        ref="refBtn"
+        :class="[btnType(props.type), { 'focus-visible': focusVisible }]"
+    >
+        <i
+            v-if="icon != null"
+            :class="[icon]"
+            :style="'color:' + props.color"
+        ></i>
+        {{ props.value }}
+        <slot></slot>
+    </button>
+</template>
 
 <style scoped>
 button {

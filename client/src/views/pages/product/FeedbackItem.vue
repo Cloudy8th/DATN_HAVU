@@ -2,7 +2,7 @@
 import { useFeedbackStore } from "@/stores/feedback";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { nextTick, defineProps, reactive, toRaw, watch } from "vue";
+import { nextTick, reactive, toRaw, watch } from "vue";
 
 const props = defineProps({
     data: Object,

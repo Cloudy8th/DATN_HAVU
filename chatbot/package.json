@@ -7,7 +7,7 @@
   "scripts": {
     "start": "nodemon index.js"
   },
-  "author": "Ha",
+  "author": "Huy",
   "license": "ISC",
   "dependencies": {
     "@google-ai/generativelanguage": "^2.1.0",

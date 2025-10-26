@@ -3,8 +3,16 @@
         <div class="account-section">
             <div class="account-avatar">
                 <div class="account-img">
-                    <img :src="urlImg ? urlImg : require('@/assets/imgs/avatar.png')" alt="Ảnh đại diện" />
-                    <input @change="handleChangeImg($event)" id="avatar" type="file" hidden />
+                    <img
+                        :src="urlImg ? urlImg : '@/assets/imgs/avatar.png'"
+                        alt="Ảnh đại diện"
+                    />
+                    <input
+                        @change="handleChangeImg($event)"
+                        id="avatar"
+                        type="file"
+                        hidden
+                    />
                     <label for="avatar">
                         <i class="fa-solid fa-pencil"></i>
                     </label>
@@ -33,17 +41,27 @@
                     </div>
                     <div class="info-content-item phone-number">
                         <label for="phoneNumber">Số điện thoại</label>
-                        <b-input v-model="userInfor.phoneNumber" id="phoneNumber" />
+                        <b-input
+                            v-model="userInfor.phoneNumber"
+                            id="phoneNumber"
+                        />
                     </div>
                 </div>
                 <div class="account-info-row">
                     <div class="info-content-item date-birth">
                         <label for="dateOfBirth">Ngày sinh</label>
-                        <b-datepicker v-model="userInfor.dateOfBirth" id="dateOfBirth" />
+                        <b-datepicker
+                            v-model="userInfor.dateOfBirth"
+                            id="dateOfBirth"
+                        />
                     </div>
                 </div>
                 <div class="account-btn">
-                    <b-button @click="hadnleSaveChange()" value="Lưu thay đổi" type="primary" />
+                    <b-button
+                        @click="hadnleSaveChange()"
+                        value="Lưu thay đổi"
+                        type="primary"
+                    />
                 </div>
             </div>
         </div>
@@ -51,9 +69,8 @@
 </template>
 
 <script setup>
-import { useUserStore } from '@/stores/user';
-import { nextTick, ref } from 'vue';
-
+import { useUserStore } from "@/stores/user";
+import { nextTick, ref } from "vue";
 
 // ---------------------- Props ----------------------
 
@@ -66,13 +83,12 @@ const fileImg = ref(null);
 
 // ---------------------- Watcher --------------------
 
-
 // ---------------------- Lifecycle ------------------
 nextTick(async () => {
     await userStore.fetchGetById();
     userInfor.value = userStore.userInfor;
     urlImg.value = userStore.userInfor.image;
-})
+});
 
 // ---------------------- Hàm xử lý ------------------
 const handleChangeImg = (event) => {
@@ -80,7 +96,7 @@ const handleChangeImg = (event) => {
     fileImg.value = event.target.files[0];
     console.log(event.target.files[0]);
     isChangeImg.value = true;
-}
+};
 
 const hadnleSaveChange = async () => {
     if (isChangeImg.value) {
@@ -89,8 +105,7 @@ const hadnleSaveChange = async () => {
         await userStore.fetchPostImage(formData);
     }
     await userStore.fetchEditProfile(userInfor.value);
-}
-
+};
 </script>
 
 <style scoped src="./account.css"></style>

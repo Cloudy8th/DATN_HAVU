@@ -3,7 +3,7 @@ import { dialog } from "@/helpers/swal";
 import { useRoleStore } from "@/stores/role";
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-import { defineEmits, defineProps, nextTick, reactive, ref } from "vue";
+import { nextTick, reactive, ref } from "vue";
 
 const emits = defineEmits(["closeModal"]);
 

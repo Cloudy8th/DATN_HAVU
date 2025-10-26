@@ -4,7 +4,7 @@
         <div class="product-catalogry">
             <div class="product-catalogry__content">
                 <div class="product-catalogry__title">
-                    <h4>{{ category.name }}</h4>
+                    <h4>{{ category?.name }}</h4>
                     <div class="sort-by">
                         Sắp xếp theo:
                         <select v-model="price" class="price form-select">

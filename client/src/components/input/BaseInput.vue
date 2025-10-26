@@ -1,36 +1,47 @@
 <template>
-    <input ref="input" type="text" v-model="inputValue" :required="props.required" />
+    <input
+        ref="input"
+        type="text"
+        v-model="inputValue"
+        :required="props.required"
+    />
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, watch, defineExpose } from "vue";
+import { ref, watch } from "vue";
 
 const props = defineProps({
     required: {
         type: Boolean,
-        default: false
+        default: false,
     },
     modelValue: {},
-})
-const emit = defineEmits(["update:modelValue"])
-const input = ref(null)
+});
+const emit = defineEmits(["update:modelValue"]);
+const input = ref(null);
 const inputValue = ref(props.modelValue);
 
-watch(() => inputValue.value, (newValue) => {
-    emit("update:modelValue", newValue);
-})
-watch(() => props.modelValue, (newValue) => {
-    inputValue.value = newValue
-})
+watch(
+    () => inputValue.value,
+    (newValue) => {
+        emit("update:modelValue", newValue);
+    }
+);
+watch(
+    () => props.modelValue,
+    (newValue) => {
+        inputValue.value = newValue;
+    }
+);
 
 // ------------- Hàm xử lý -------------------
 
 const focus = () => {
     input.value.focus();
-}
+};
 defineExpose({
-    focus
-})
+    focus,
+});
 </script>
 
 <style scoped>

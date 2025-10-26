@@ -61,10 +61,6 @@ const handleCancelOrder = async (item) => {
         dialog("Thông báo", "warning", "Đơn hàng đã bị hủy");
         return;
     }
-    if (item?.status === "PAID") {
-        dialog("Thông báo", "warning", "Đơn hàng đã thanh toán không thể hủy");
-        return;
-    }
     if (item?.status === "SHIPPING" || item?.status === "SHIPPED") {
         dialog(
             "Thông báo",

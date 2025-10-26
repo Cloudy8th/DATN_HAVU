@@ -176,19 +176,40 @@ const sortBy = (column) => {
                     </b-button>
                 </div>
                 <div class="btn-search">
-                    <select v-model="categoryId" class="form-select" id="categoryId">
+                    <select
+                        v-model="categoryId"
+                        class="form-select"
+                        id="categoryId"
+                    >
                         <option :value="null" selected>Danh mục</option>
-                        <option v-for="item in categories.data" :value="item?.id" :key="item?.id">
+                        <option
+                            v-for="item in categories.data"
+                            :value="item?.id"
+                            :key="item?.id"
+                        >
                             {{ item?.name }}
                         </option>
                     </select>
-                    <b-input v-model="productIdSearch" ref="refInputSearch" placeholder="Tìm theo mã sản phẩm" />
-                    <b-input v-model="keyword" ref="refInputSearch" placeholder="Tìm theo tên sản phẩm" />
+                    <b-input
+                        v-model="productIdSearch"
+                        ref="refInputSearch"
+                        placeholder="Tìm theo mã sản phẩm"
+                    />
+                    <b-input
+                        v-model="keyword"
+                        ref="refInputSearch"
+                        placeholder="Tìm theo tên sản phẩm"
+                    />
                     <div class="check-is-stock">
                         <label for="isStock">Tồn kho: </label>
                         <br />
-                        <input v-model="isStock" type="checkbox" class="form-check-input"
-                            style="width: 18px; height: 18px" id="isStock" />
+                        <input
+                            v-model="isStock"
+                            type="checkbox"
+                            class="form-check-input"
+                            style="width: 18px; height: 18px"
+                            id="isStock"
+                        />
                     </div>
                     <div class="btn-search-button">
                         <b-button @click="filterProduct" type="secondary">
@@ -207,50 +228,74 @@ const sortBy = (column) => {
                     <th scope="col" class="th-sort" @click="sortBy('title')">
                         Tên sản phẩm
                         <i v-if="title === null" class="fa-solid fa-sort"></i>
-                        <i v-else :class="[
-                            'fa-solid',
-                            title === 'desc'
-                                ? 'fa-sort-down'
-                                : 'fa-sort-up',
-                        ]"></i>
+                        <i
+                            v-else
+                            :class="[
+                                'fa-solid',
+                                title === 'desc'
+                                    ? 'fa-sort-down'
+                                    : 'fa-sort-up',
+                            ]"
+                        ></i>
                     </th>
                     <th scope="col">Tên danh mục</th>
                     <th scope="col">Giá gốc</th>
-                    <th scope="col" class="th-sort" @click="sortBy('salePrice')">
+                    <th
+                        scope="col"
+                        class="th-sort"
+                        @click="sortBy('salePrice')"
+                    >
                         Giá bán
                         <i v-if="price === null" class="fa-solid fa-sort"></i>
-                        <i v-else :class="[
-                            'fa-solid',
-                            price === 'desc'
-                                ? 'fa-sort-down'
-                                : 'fa-sort-up',
-                        ]"></i>
+                        <i
+                            v-else
+                            :class="[
+                                'fa-solid',
+                                price === 'desc'
+                                    ? 'fa-sort-down'
+                                    : 'fa-sort-up',
+                            ]"
+                        ></i>
                     </th>
                     <th scope="col" class="th-sort" @click="sortBy('discount')">
                         Giảm giá
-                        <i v-if="discount === null" class="fa-solid fa-sort"></i>
-                        <i v-else :class="[
-                            'fa-solid',
-                            discount === 'desc'
-                                ? 'fa-sort-down'
-                                : 'fa-sort-up',
-                        ]"></i>
+                        <i
+                            v-if="discount === null"
+                            class="fa-solid fa-sort"
+                        ></i>
+                        <i
+                            v-else
+                            :class="[
+                                'fa-solid',
+                                discount === 'desc'
+                                    ? 'fa-sort-down'
+                                    : 'fa-sort-up',
+                            ]"
+                        ></i>
                     </th>
                     <th scope="col">Số lượng</th>
                     <th class="action" scope="col">Chức năng</th>
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item, index) in productStore.products.data" :key="item?.id">
+                <tr
+                    v-for="(item, index) in productStore.products.data"
+                    :key="item?.id"
+                >
                     <th width="50px" scope="row">
                         {{ index + 1 + perPage * (page - 1) }}
                     </th>
                     <td>{{ item?.id }}</td>
                     <td style="text-align: center">
-                        <img :src="item?.imageProducts.length > 0
-                                ? item?.imageProducts[0]?.url
-                                : require('@/assets/imgs/logo.png')
-                            " alt="" style="width: 55px; height: 55px" />
+                        <img
+                            :src="
+                                item?.imageProducts.length > 0
+                                    ? item?.imageProducts[0]?.url
+                                    : '@/assets/imgs/TMart-logo.png'
+                            "
+                            alt=""
+                            style="width: 55px; height: 55px"
+                        />
                     </td>
                     <td class="value-too-long" :title="item?.title">
                         <span>{{ item?.title }}</span>
@@ -264,19 +309,35 @@ const sortBy = (column) => {
                     <td width="80px">{{ item?.quantity }}</td>
 
                     <td class="action">
-                        <button @click="handleEditProduct(item?.id)" class="btn-edit">
+                        <button
+                            @click="handleEditProduct(item?.id)"
+                            class="btn-edit"
+                        >
                             <i class="fa-solid fa-pencil"></i>
                         </button>
-                        <button @click="handleDeleteProduct(item?.id)" class="btn-delete">
+                        <button
+                            @click="handleDeleteProduct(item?.id)"
+                            class="btn-delete"
+                        >
                             <i class="fa-solid fa-trash-can"></i>
                         </button>
                     </td>
                 </tr>
             </tbody>
         </table>
-        <v-pagination v-model="page" size="40" :length="totalPage" rounded="circle"></v-pagination>
+        <v-pagination
+            v-model="page"
+            size="40"
+            :length="totalPage"
+            rounded="circle"
+        ></v-pagination>
     </div>
-    <ProductModal :productId="productId" v-if="showModal" @closeModal="handleCloseModal" :statusForm="statusForm">
+    <ProductModal
+        :productId="productId"
+        v-if="showModal"
+        @closeModal="handleCloseModal"
+        :statusForm="statusForm"
+    >
     </ProductModal>
 </template>
 

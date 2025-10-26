@@ -75,8 +75,8 @@ const handlePushData = () => {
                     <FeedbackItem
                         v-for="item in orderDetailList"
                         :key="item"
-                        :classify="item.classify"
-                        :data="item.product"
+                        :classify="item?.classify"
+                        :data="item?.product"
                         @pushData="handlePushData()"
                     />
                 </div>
