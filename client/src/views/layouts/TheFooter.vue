@@ -3,15 +3,15 @@
     <div class="footer-content">
       <div class="footer-contact">
         <a target="_blank" href="https://maps.app.goo.gl/FgHi5QRvzM3T4jcm6">
-          Số 298 Đ. Cầu Diễn, Minh Khai, Bắc Từ Liêm, Hà Nội, Việt Nam
+          Vũ Dương - Ninh Bình
           <i class="fa-solid fa-location-dot"></i>
         </a>
-        <a href="tel:098765432">
-          098765432
+        <a href="tel:0965530897">
+          0965530897
           <i class="fa-solid fa-phone"></i>
         </a>
-        <a href="mailto:supporthmart@email.com">
-          supporthmart@email.com
+        <a href="mailto:vuha74486@gmail.com">
+          vuha74486@gmail.com
           <i class="fa-solid fa-envelope"></i>
         </a>
       </div>

@@ -5,102 +5,102 @@
 @import "./carousel.css";
 
 :root {
-    --color-primary: #006fff;
-    --color-primary-hover: #4696ff;
-    --color-primary-focus: #0138ff;
-    --color-primary-opacity: rgba(59, 144, 255, 0.2);
-    --color-white: #ffff;
-    --color-text: #27272a;
-    --color-greyish: #ccc;
-    --color-grey: #929292;
-    --color-border: #ddd;
-    --color-box-shadow: rgba(23, 27, 42, 0.24);
-    --color-outline: rgb(153, 202, 255);
-    --color-red: #f44336;
-    --color-pink: #ffdde0;
-    --color-green: #00c400;
-    --color-blue: #002fff;
-    --color-orange: #ffa500;
-    --color-yellow: #ffce3d;
-    --color-cyan: #00ffff;
-    --color-blue-violet: #8a2be2;
+  --color-primary: #305f91;
+  --color-primary-hover: #607e9e;
+  --color-primary-focus: #194472;
+  --color-primary-opacity: rgba(59, 144, 255, 0.2);
+  --color-white: #ffff;
+  --color-text: #27272a;
+  --color-greyish: #ccc;
+  --color-grey: #929292;
+  --color-border: #ddd;
+  --color-box-shadow: rgba(23, 27, 42, 0.24);
+  --color-outline: rgb(153, 202, 255);
+  --color-red: #f44336;
+  --color-pink: #ffdde0;
+  --color-green: #00c400;
+  --color-blue: #002fff;
+  --color-orange: #ffa500;
+  --color-yellow: #ffce3d;
+  --color-cyan: #00ffff;
+  --color-blue-violet: #8a2be2;
 
-    --bg-main: #f5f5fa;
-    --bg-footer: #006fff;
-    --bg-opacity: rgba(172, 172, 172, 0.6);
+  --bg-main: #f5f5fa;
+  --bg-footer: #006fff;
+  --bg-opacity: rgba(172, 172, 172, 0.6);
 
-    --width-sidebar: 250px;
-    --width-chat-box: 500px;
+  --width-sidebar: 250px;
+  --width-chat-box: 500px;
 
-    --height-header: 80px;
-    --height-btn-default: 36px;
-    --height-footer: 200px;
-    --height-chat-box: 500px;
+  --height-header: 80px;
+  --height-btn-default: 36px;
+  --height-footer: 200px;
+  --height-chat-box: 500px;
 
-    --border-radius-page: 8px;
-    --border-radius: 4px;
-    --outline-offset: 2px;
+  --border-radius-page: 8px;
+  --border-radius: 4px;
+  --outline-offset: 2px;
 
-    --v-theme-overlay-multiplier: 2;
+  --v-theme-overlay-multiplier: 2;
 }
 
 * {
-    padding: 0;
-    margin: 0;
-    font-size: 14px;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  box-sizing: border-box;
 }
 
 p,
 pre {
-    margin: 0;
+  margin: 0;
 }
 
 .line {
-    width: 100%;
-    margin: 15px 0;
-    border: 1px dashed var(--color-border);
+  width: 100%;
+  margin: 15px 0;
+  border: 1px dashed var(--color-border);
 }
 
 .line-vertical {
-    height: inherit;
-    margin: 0 20px;
-    border: 1px solid var(--color-border);
+  height: inherit;
+  margin: 0 20px;
+  border: 1px solid var(--color-border);
 }
 
 .required {
-    position: relative;
+  position: relative;
 }
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
+  -webkit-appearance: none;
 }
 
 .required::after {
-    content: "*";
-    position: absolute;
-    color: var(--color-red);
-    font-weight: bold;
-    font-size: 18px;
-    top: -3px;
+  content: "*";
+  position: absolute;
+  color: var(--color-red);
+  font-weight: bold;
+  font-size: 18px;
+  top: -3px;
 }
 
 ::-webkit-scrollbar {
-    width: 6px;
-    height: 8px;
+  width: 6px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #f1f1f1;
+  background: #f1f1f1;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #b9b9b9;
-    border-radius: 10px;
+  background: #b9b9b9;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #888;
+  background: #888;
 }
