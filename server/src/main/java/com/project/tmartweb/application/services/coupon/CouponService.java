@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -44,6 +45,16 @@ public class CouponService implements ICouponService {
             return new PaginationDTO<>(couponRepository.findAll(), null);
         }
         BasePagination<Coupon, CouponRepository> basePagination = new BasePagination<>(couponRepository);
+        PaginationDTO<Coupon> couponPaginationDTO = basePagination.paginate(page, perPage);
+        List<Coupon> couponData = couponPaginationDTO.getData();
+        for (Coupon coupon : couponData) {
+            Timestamp timeNow = new Timestamp(System.currentTimeMillis());
+            if (coupon.getExpirationDate().before(timeNow)) {
+                coupon.setExpired(true);
+                couponRepository.save(coupon);
+            }
+        }
+
         return basePagination.paginate(page, perPage);
     }
 
@@ -54,7 +65,8 @@ public class CouponService implements ICouponService {
 
     @Override
     public Coupon getById(String id) {
-        return findById(id.toUpperCase()).orElseThrow(() -> new NotFoundException("Mã giảm giá không tồn tại!", "Coupon not found"));
+        return findById(id.toUpperCase()).orElseThrow(() -> new NotFoundException("Mã giảm giá không tồn tại!",
+                                                                                  "Coupon not found"));
     }
 
     @Override
