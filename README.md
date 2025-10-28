@@ -49,7 +49,6 @@ This Spring Boot application includes:
 - **Thymeleaf** - Template engine
 - **Spring Boot Actuator** - Application monitoring
 
-**Server Port:** `6060`
 
 **API Base Path:** `api/v1`
 
@@ -79,7 +78,7 @@ MAIL_USERNAME=your_gmail_address@gmail.com
 MAIL_PASSWORD=your_gmail_app_password
 
 # Frontend URL
-URL_FRONTEND=http://localhost:3000
+URL_FRONTEND=http://localhost:8080
 ```
 
 ### Setting Environment Variables
@@ -183,26 +182,6 @@ java -jar target/hmartweb-0.0.1-SNAPSHOT.jar
 
 When the application starts successfully, you should see:
 
-```
-Tomcat started on port 6060 (http)
-Started TmartwebApplication in X.XXX seconds
-```
-
-The server will be accessible at: `http://localhost:6060`
-
-API endpoints will be available at: `http://localhost:6060/api/v1`
-
-## API Documentation
-
-### Base URL
-```
-http://localhost:6060/api/v1
-```
-
-### Health Check
-```
-GET http://localhost:6060/actuator/health
-```
 
 ### Common Endpoints (Example)
 - Authentication endpoints will be under `/api/v1/auth`
@@ -237,13 +216,6 @@ server/
 
 ### Common Issues
 
-#### 1. Port Already in Use
-```
-Error: Web server failed to start. Port 6060 was already in use.
-```
-**Solution:** 
-- Stop the process using port 6060, or
-- Change the port in `application.yml`
 
 #### 2. Database Connection Failed
 ```
