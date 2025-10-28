@@ -15,7 +15,8 @@ public class ProductIdGenerator {
     @Transactional
     public String generateNextId() {
         List<String> resultList = entityManager
-                .createQuery("SELECT p.id FROM Product p ORDER BY p.id DESC", String.class)
+                .createQuery("SELECT p.id FROM Product p " +
+                                     "ORDER BY CAST(SUBSTRING(p.id, 9) AS int) DESC", String.class)
                 .setMaxResults(1)
                 .getResultList();
 
