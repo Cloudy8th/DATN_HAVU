@@ -154,7 +154,7 @@ export default {
       }
     },
     handleLogout() {
-      this.authStore.fetchLogout();
+      this.authStore.fetchLogout(this.$route);
     },
   },
   async created() {

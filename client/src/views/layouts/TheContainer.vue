@@ -6,7 +6,7 @@
     </section>
   </main>
   <TheFooter />
-  <!-- <ChatBot /> -->
+  <ChatBot />
 </template>
 
 <script>

@@ -30,10 +30,10 @@ public class User extends AbstractAuditingEntity {
     @Column(name = "full_name", length = 100)
     private String fullName;
 
-    @Column(name = "phone_number", length = 12)
+    @Column(name = "phone_number", length = 12, unique = true)
     private String phoneNumber;
 
-    @Column(name = "email", length = 120)
+    @Column(name = "email", length = 120, unique = true)
     private String email;
 
     @Column(name = "date_of_birth")

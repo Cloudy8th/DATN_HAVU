@@ -165,3 +165,34 @@ create table carts(
   	updated_at timestamp,
   	updated_by varchar(100)
 );
+
+-- tạo role đúng tên
+CREATE ROLE chatbot_read_only LOGIN PASSWORD 'postgres';
+
+-- không có quyền nguy hiểm
+ALTER ROLE chatbot_read_only 
+  NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION;
+
+-- cho phép dùng schema public
+GRANT USAGE ON SCHEMA public TO chatbot_read_only;
+
+-- cho phép SELECT trên các bảng bạn dùng
+GRANT SELECT ON public.products   TO chatbot_read_only;
+GRANT SELECT ON public.categories TO chatbot_read_only;
+GRANT SELECT ON public.coupons    TO chatbot_read_only;
+GRANT SELECT ON public.feedbacks  TO chatbot_read_only;
+
+DROP VIEW IF EXISTS public.v_feedback_stats CASCADE;
+
+CREATE OR REPLACE VIEW public.v_feedback_stats AS
+SELECT
+  f.product_id::varchar,
+  AVG(f.star)::numeric(3,2) AS avg_star,
+  COUNT(*)::int           AS review_count,
+  MAX(f.created_at)       AS last_review_at
+FROM public.feedbacks f
+GROUP BY f.product_id;
+
+GRANT SELECT ON public.v_feedback_stats TO chatbot_read_only;
+
+CREATE INDEX IF NOT EXISTS idx_feedbacks_product_id ON public.feedbacks (product_id);
