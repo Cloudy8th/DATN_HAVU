@@ -1,5 +1,9 @@
 package com.project.tmartweb.web.controllers;
 
+import com.project.tmartweb.application.responses.ProductSalesStatistical;
+import com.project.tmartweb.application.responses.RevenueByDate;
+import com.project.tmartweb.application.responses.RevenueByWeek;
+import com.project.tmartweb.application.responses.Statistical;
 import com.project.tmartweb.application.services.order.IOrderExportService;
 import com.project.tmartweb.application.services.order.IOrderService;
 import com.project.tmartweb.domain.dtos.OrderDTO;
@@ -110,6 +114,59 @@ public class OrdersController {
     @RoleAdmin
     public ResponseEntity<?> statistical(@RequestParam(required = false) int year) {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.statisticals(year));
+    }
+
+    @GetMapping("/stats/daily")
+    @RoleAdmin
+    public ResponseEntity<List<RevenueByDate>> getDailyStats(
+            @RequestParam(name = "startDate", required = false) String startDate,
+            @RequestParam(name = "endDate", required = false) String endDate
+    ) {
+        Timestamp start = (startDate != null && !startDate.isEmpty()) ? Timestamp.valueOf(startDate) : null;
+        Timestamp end = (endDate != null && !endDate.isEmpty()) ? Timestamp.valueOf(endDate) : null;
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getDailyStats(start, end));
+    }
+
+    /**
+     * Láº¥y thá»‘ng kÃª doanh thu theo tuáº§n trong má»™t khoáº£ng thá»i gian.
+     */
+    @GetMapping("/stats/weekly")
+    @RoleAdmin
+    public ResponseEntity<List<RevenueByWeek>> getWeeklyStats(
+            @RequestParam(name = "startDate", required = false) String startDate,
+            @RequestParam(name = "endDate", required = false) String endDate
+    ) {
+        Timestamp start = (startDate != null && !startDate.isEmpty()) ? Timestamp.valueOf(startDate) : null;
+        Timestamp end = (endDate != null && !endDate.isEmpty()) ? Timestamp.valueOf(endDate) : null;
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getWeeklyStats(start, end));
+    }
+
+    /**
+     * Láº¥y thá»‘ng kÃª doanh thu theo thÃ¡ng trong má»™t khoáº£ng thá»i gian.
+     */
+    @GetMapping("/stats/monthly")
+    @RoleAdmin
+    public ResponseEntity<List<Statistical>> getMonthlyStats(
+            @RequestParam(name = "startDate", required = false) String startDate,
+            @RequestParam(name = "endDate", required = false) String endDate
+    ) {
+        Timestamp start = (startDate != null && !startDate.isEmpty()) ? Timestamp.valueOf(startDate) : null;
+        Timestamp end = (endDate != null && !endDate.isEmpty()) ? Timestamp.valueOf(endDate) : null;
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getMonthlyStats(start, end));
+    }
+
+    /**
+     * Láº¥y thá»‘ng kÃª sá»‘ lÆ°á»£ng & doanh thu theo tá»«ng sáº£n pháº©m trong má»™t khoáº£ng thá»i gian.
+     */
+    @GetMapping("/stats/products")
+    @RoleAdmin
+    public ResponseEntity<List<ProductSalesStatistical>> getProductSalesStats(
+            @RequestParam(name = "startDate", required = false) String startDate,
+            @RequestParam(name = "endDate", required = false) String endDate
+    ) {
+        Timestamp start = (startDate != null && !startDate.isEmpty()) ? Timestamp.valueOf(startDate) : null;
+        Timestamp end = (endDate != null && !endDate.isEmpty()) ? Timestamp.valueOf(endDate) : null;
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.getProductSalesStats(start, end));
     }
 
     @GetMapping("/export/{orderId}")

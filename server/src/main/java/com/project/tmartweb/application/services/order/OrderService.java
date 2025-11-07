@@ -29,7 +29,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
-
+import com.project.tmartweb.application.responses.RevenueByDate;
+import com.project.tmartweb.application.responses.RevenueByWeek;
+import com.project.tmartweb.application.responses.ProductSalesStatistical;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -75,8 +77,8 @@ public class OrderService implements IOrderService {
         for (CartDTO cartDTO : orderDTO.getCartItems()) {
             Product product = productService.getById(cartDTO.getProductId());
             if (product.getQuantity() < cartDTO.getQuantity()) {
-                throw new InvalidParamException("Số lượng sản phẩm trong kho không đủ",
-                                                "Quantity not enough");
+                throw new InvalidParamException("SoÌ‚Ì luÌ›oÌ›Ì£ng saÌ‰n phaÌ‚Ì‰m trong kho khoÌ‚ng Ä‘uÌ‰",
+                        "Quantity not enough");
             }
             OrderDetail orderDetail = mapper.map(cartDTO, OrderDetail.class);
             orderDetail.setProduct(product);
@@ -96,9 +98,9 @@ public class OrderService implements IOrderService {
         order.setStatus(OrderStatus.PENDING);
         Notification notification = new Notification();
         notification.setOrder(order);
-        notification.setTitle("Đơn hàng đã tạo thành công");
-        notification.setContent("Đơn hàng " + order.getId() + " đã được tạo thành công. " +
-                                        " Bạn có thể theo dõi đơn hàng tại đây.");
+        notification.setTitle("ÄÆ¡n hÃ ng Ä‘Ã£ táº¡o thÃ nh cÃ´ng");
+        notification.setContent("ÄÆ¡n hÃ ng " + order.getId() + " Ä‘Ã£ Ä‘Æ°á»£c táº¡o thÃ nh cÃ´ng. " +
+                " Báº¡n cÃ³ thá»ƒ theo dÃµi Ä‘Æ¡n hÃ ng táº¡i Ä‘Ã¢y.");
         notification.setUser(user);
         notificationRepository.save(notification);
         order.setTotalMoney(Calculator.totalMoneyOrder(orderDetails, discount));
@@ -115,24 +117,24 @@ public class OrderService implements IOrderService {
             notification.setUser(order.getUser());
             notification.setOrder(order);
             if (orderDTO.getStatus() == OrderStatus.PROCESSED) {
-                notification.setTitle("Đơn hàng đã xử lý thành công.");
-                notification.setContent("Đơn hàng của bạn đã được xử lý thành công. " +
-                                                " Chúng tôi sẽ giao cho đơn vị vận chuyển trong thời gian sớm nhất.");
+                notification.setTitle("ÄÆ¡n hÃ ng Ä‘Ã£ xá»­ lÃ½ thÃ nh cÃ´ng.");
+                notification.setContent("ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c xá»­ lÃ½ thÃ nh cÃ´ng. " +
+                        " ChÃºng tÃ´i sáº½ giao cho Ä‘Æ¡n vá»‹ váº­n chuyá»ƒn trong thá»i gian sá»›m nháº¥t.");
             }
             if (orderDTO.getStatus() == OrderStatus.SHIPPING) {
-                notification.setTitle("Đơn hàng đang được giao.");
-                notification.setContent("Đơn hàng của bạn đã được giao cho đơn vị vận chuyển. " +
-                                                " Hãy chú ý điện thoại nhé, đơn hàng sẽ được giao tới bạn trong thời gian sớm nhất có thể.");
+                notification.setTitle("ÄÆ¡n hÃ ng Ä‘ang Ä‘Æ°á»£c giao.");
+                notification.setContent("ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c giao cho Ä‘Æ¡n vá»‹ váº­n chuyá»ƒn. " +
+                        " HÃ£y chÃº Ã½ Ä‘iá»‡n thoáº¡i nhÃ©, Ä‘Æ¡n hÃ ng sáº½ Ä‘Æ°á»£c giao tá»›i báº¡n trong thá»i gian sá»›m nháº¥t cÃ³ thá»ƒ.");
             }
             if (orderDTO.getStatus() == OrderStatus.SHIPPED) {
-                notification.setTitle("Đơn hàng đã giao thành công.");
-                notification.setContent("Đơn hàng của bạn đã được giao thành công. " +
-                                                " Hãy đánh trải nghiệm, đánh giá sản phẩm và nếu có lỗi gì hãy liên hệ với chúng tôi ngay nhé.");
+                notification.setTitle("ÄÆ¡n hÃ ng Ä‘Ã£ giao thÃ nh cÃ´ng.");
+                notification.setContent("ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c giao thÃ nh cÃ´ng. " +
+                        " HÃ£y Ä‘Ã¡nh tráº£i nghiá»‡m, Ä‘Ã¡nh giÃ¡ sáº£n pháº©m vÃ  náº¿u cÃ³ lá»—i gÃ¬ hÃ£y liÃªn há»‡ vá»›i chÃºng tÃ´i ngay nhÃ©.");
                 this.sendMailShippedOrder(order);
             }
             if (orderDTO.getStatus() == OrderStatus.CANCELLED) {
-                notification.setTitle("Đơn hàng đã hủy thành công.");
-                notification.setContent("Đơn hàng của bạn đã được hủy thành công. ");
+                notification.setTitle("ÄÆ¡n hÃ ng Ä‘Ã£ há»§y thÃ nh cÃ´ng.");
+                notification.setContent("ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c há»§y thÃ nh cÃ´ng. ");
                 for (OrderDetail orderDetail : order.getOrderDetails()) {
                     Product product = orderDetail.getProduct();
                     product.setQuantity(product.getQuantity() + orderDetail.getQuantity());
@@ -159,7 +161,7 @@ public class OrderService implements IOrderService {
         if (page == null && perPage == null) {
             return new PaginationDTO<>(orderRepository.findAll(
                     Sort.by("createdAt").descending()),
-                                       null);
+                    null);
         }
         BasePagination<Order, OrderRepository> basePagination = new BasePagination<>(orderRepository);
         return basePagination.paginate(page, perPage);
@@ -172,7 +174,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public Order getById(UUID id) {
-        return findById(id).orElseThrow(() -> new NotFoundException("Đơn hàng không tôn tại!", "Order not found"));
+        return findById(id).orElseThrow(() -> new NotFoundException("ÄÆ¡n hÃ ng khÃ´ng tÃ´n táº¡i!", "Order not found"));
     }
 
     @Override
@@ -237,18 +239,57 @@ public class OrderService implements IOrderService {
         if (year == 0) {
             year = Calendar.getInstance().get(Calendar.YEAR);
         }
-        List<Statistical> statistical = orderRepository.statistical(year);
+
+        // Táº¡o ngÃ y báº¯t Ä‘áº§u vÃ  káº¿t thÃºc cho nÄƒm
+        Calendar cal = Calendar.getInstance();
+        cal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
+        Timestamp startDate = new Timestamp(cal.getTimeInMillis());
+
+        cal.set(year, Calendar.DECEMBER, 31, 23, 59, 59);
+        Timestamp endDate = new Timestamp(cal.getTimeInMillis());
+
+        // Gá»i phÆ°Æ¡ng thá»©c repository Má»šI
+        List<Statistical> statistical = orderRepository.statisticalByMonth(startDate, endDate);
         List<Statistical> result = new ArrayList<>();
+
         int currentMonthIndex = 0;
         for (int month = 1; month <= 12; month++) {
             if (currentMonthIndex < statistical.size() && statistical.get(currentMonthIndex).getMonth() == month) {
-                result.add(statistical.get(currentMonthIndex));
+                // ThÃªm nÄƒm vÃ o Ä‘á»‘i tÆ°á»£ng tráº£ vá»
+                Statistical s = statistical.get(currentMonthIndex);
+                s.setYear(year);
+                result.add(s);
                 currentMonthIndex++;
             } else {
-                result.add(new Statistical(month, 0.0));
+                // ThÃªm thá»‘ng kÃª (nÄƒm, thÃ¡ng, 0.0) cho cÃ¡c thÃ¡ng khÃ´ng cÃ³ doanh thu
+                result.add(new Statistical(year, month, 0.0));
             }
         }
         return result;
+    }
+
+    // TRIá»‚N KHAI CÃC PHÆ¯Æ NG THá»¨C Má»šI
+
+    @Override
+    public List<Statistical> getMonthlyStats(Timestamp startDate, Timestamp endDate) {
+        // Cáº§n logic láº¥p Ä‘áº§y cÃ¡c thÃ¡ng bá»‹ thiáº¿u tÆ°Æ¡ng tá»± nhÆ° hÃ m statisticals(int year) náº¿u muá»‘n
+        return orderRepository.statisticalByMonth(startDate, endDate);
+    }
+
+    @Override
+    public List<RevenueByDate> getDailyStats(Timestamp startDate, Timestamp endDate) {
+        return orderRepository.statisticalByDay(startDate, endDate);
+    }
+
+    @Override
+    public List<RevenueByWeek> getWeeklyStats(Timestamp startDate, Timestamp endDate) {
+        return orderRepository.statisticalByWeek(startDate, endDate);
+    }
+
+    @Override
+    public List<ProductSalesStatistical> getProductSalesStats(Timestamp startDate, Timestamp endDate) {
+        // PhÆ°Æ¡ng thá»©c nÃ y náº±m á»Ÿ OrderDetailRepository
+        return orderDetailRepository.statisticalByProduct(startDate, endDate);
     }
 
     @Override
@@ -256,12 +297,12 @@ public class OrderService implements IOrderService {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String mailTo = order.getUser().getEmail();
-        String subject = "Tạo đơn hàng hàng thành công";
+        String subject = "Táº¡o Ä‘Æ¡n hÃ ng hÃ ng thÃ nh cÃ´ng";
         Map<String, Object> context = new HashMap<>();
         Timestamp orderDate = order.getCreatedAt();
         LocalDateTime dateTime = Instant.ofEpochMilli(orderDate.getTime())
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDateTime();
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         String userReceiveName = order.getFullName();
         String phoneNumber = order.getPhoneNumber();
         String address = order.getAddress();
@@ -299,12 +340,12 @@ public class OrderService implements IOrderService {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String mailTo = order.getUser().getEmail();
-        String subject = "Giao hàng thành công";
+        String subject = "Giao hÃ ng thÃ nh cÃ´ng";
         Map<String, Object> context = new HashMap<>();
         Timestamp orderDate = order.getUpdatedAt();
         LocalDateTime dateTime = Instant.ofEpochMilli(orderDate.getTime())
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDateTime();
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         List<OrderDetail> orderDetails = orderDetailRepository.findAllByOrderId(order.getId());
         double totalMoney = order.getTotalMoney();
         String linkOrder = linkOrderDetails + order.getId();

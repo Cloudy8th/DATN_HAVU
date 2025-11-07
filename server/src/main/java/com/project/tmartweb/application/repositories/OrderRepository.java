@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import com.project.tmartweb.application.responses.RevenueByDate;
+import com.project.tmartweb.application.responses.RevenueByWeek;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -25,11 +27,28 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
                              @Param("status") OrderStatus status,
                              @Param("keyword") String keyword);
 
-    @Query("SELECT NEW com.project.tmartweb.application.responses.Statistical(EXTRACT(MONTH FROM o.createdAt), SUM(o.totalMoney)) " +
+    @Query("SELECT NEW com.project.tmartweb.application.responses.Statistical(EXTRACT(YEAR FROM o.createdAt), EXTRACT(MONTH FROM o.createdAt), SUM(o.totalMoney)) " +
             "FROM Order o " +
-            "WHERE EXTRACT(YEAR FROM o.createdAt) = :year AND o.status = 'SHIPPED'" +
-            "GROUP BY EXTRACT(MONTH FROM o.createdAt)")
-    List<Statistical> statistical(@Param("year") int year);
+            "WHERE o.status = 'SHIPPED' AND o.createdAt BETWEEN :startDate AND :endDate " +
+            "GROUP BY EXTRACT(YEAR FROM o.createdAt), EXTRACT(MONTH FROM o.createdAt) " +
+            "ORDER BY EXTRACT(YEAR FROM o.createdAt), EXTRACT(MONTH FROM o.createdAt)")
+    List<Statistical> statisticalByMonth(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+
+    // Má»šI: Thá»‘ng kÃª theo ngÃ y
+    @Query("SELECT NEW com.project.tmartweb.application.responses.RevenueByDate(CAST(o.createdAt AS DATE), SUM(o.totalMoney)) " +
+            "FROM Order o " +
+            "WHERE o.status = 'SHIPPED' AND o.createdAt BETWEEN :startDate AND :endDate " +
+            "GROUP BY CAST(o.createdAt AS DATE) " +
+            "ORDER BY CAST(o.createdAt AS DATE)")
+    List<RevenueByDate> statisticalByDay(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
+
+    // Má»šI: Thá»‘ng kÃª theo tuáº§n
+    @Query("SELECT NEW com.project.tmartweb.application.responses.RevenueByWeek(EXTRACT(YEAR FROM o.createdAt), EXTRACT(WEEK FROM o.createdAt), SUM(o.totalMoney)) " +
+            "FROM Order o " +
+            "WHERE o.status = 'SHIPPED' AND o.createdAt BETWEEN :startDate AND :endDate " +
+            "GROUP BY EXTRACT(YEAR FROM o.createdAt), EXTRACT(WEEK FROM o.createdAt) " +
+            "ORDER BY EXTRACT(YEAR FROM o.createdAt), EXTRACT(WEEK FROM o.createdAt)")
+    List<RevenueByWeek> statisticalByWeek(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 
     @Query("select o from Order o " +
             "where (cast(:startDate as timestamp) is null or " +

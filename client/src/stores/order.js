@@ -17,10 +17,16 @@ export const useOrderStore = defineStore('order', {
         loadingOrder: false,
         successOrder: false,
         codeStatusPayment: null,
-        statistical: []
+        statistical: [],
+        // ===== THÊM CÁC STATE MỚI ===== //
+        dailyStats: [],
+        weeklyStats: [],
+        monthlyStats: [],
+        productSalesStats: []
     }),
     getters: {},
     actions: {
+        // ... (giữ nguyên các actions cũ) ...
 
         async fetchGetAllOrder(page, perPage) {
             try {
@@ -33,7 +39,7 @@ export const useOrderStore = defineStore('order', {
                     this.successOrder = true;
                 }
             } catch (error) {
-                dialog('Lấy đơn hàng thất bại', 'error', error?.response?.data?.userMessage);
+                dialog('Lấy đơn hàng thất bại', 'error', error?.response?.data?.userMessage);
                 console.error(error);
             } finally {
                 this.loadingOrder = false;
@@ -50,7 +56,7 @@ export const useOrderStore = defineStore('order', {
                     this.successOrder = true;
                 }
             } catch (error) {
-                dialog('Lấy đơn hàng thất bại', 'error', error?.response?.data?.userMessage);
+                dialog('Lấy đơn hàng thất bại', 'error', error?.response?.data?.userMessage);
                 console.error(error);
             } finally {
                 this.loadingOrder = false;
@@ -62,11 +68,11 @@ export const useOrderStore = defineStore('order', {
                 this.loadingOrder = true;
                 const res = await orderService.update(id, data);
                 if (res.status === 200) {
-                    toastify('Cập nhật đơn hàng thành công', 'success');
+                    toastify('Cập nhật đơn hàng thành công', 'success');
                     await this.fetchGetAllOrder(page, perPage);
                 }
             } catch (error) {
-                dialog('Cập nhật đơn hàng thất bại', 'error', error?.response?.data?.userMessage);
+                dialog('Cập nhật đơn hàng thất bại', 'error', error?.response?.data?.userMessage);
                 console.error(error);
             } finally {
                 this.loadingOrder = false;
@@ -85,7 +91,7 @@ export const useOrderStore = defineStore('order', {
                     await this.fetchGetAllByUser(userStore.userId);
                 }
             } catch (error) {
-                dialog('Cập nhật đơn hàng thất bại', 'error', error?.response?.data?.userMessage);
+                dialog('Cập nhật đơn hàng thất bại', 'error', error?.response?.data?.userMessage);
                 console.error(error);
             } finally {
                 this.loadingOrder = false;
@@ -102,10 +108,10 @@ export const useOrderStore = defineStore('order', {
                         return;
                     }
                     router.push({ name: 'HomePage' })
-                    dialog('Đặt hàng thành công', 'success', null);
+                    dialog('Đặt hàng thành công', 'success', null);
                 }
             } catch (error) {
-                dialog('Đặt hàng thất bại', 'error', error?.response?.data?.userMessage);
+                dialog('Đặt hàng thất bại', 'error', error?.response?.data?.userMessage);
                 console.error(error);
             } finally {
                 this.loadingOrder = false;
@@ -130,7 +136,7 @@ export const useOrderStore = defineStore('order', {
                     this.ordersByUser = res.data;
                 }
             } catch (error) {
-                toastify('Lỗi không lấy được đơn hàng', 'error');
+                toastify('Lỗi không lấy được đơn hàng', 'error');
                 console.error(error);
             } finally {
                 this.loadingOrder = false;
@@ -223,6 +229,80 @@ export const useOrderStore = defineStore('order', {
             } catch (error) {
                 toastify('Lỗi khi lấy danh sách đơn hàng', 'error');
                 console.error(error);
+            } finally {
+                this.loadingOrder = false;
+            }
+        },
+
+        // ========== THÊM CÁC ACTIONS MỚI ========== //
+
+        // Thống kê doanh thu theo ngày
+        async fetchDailyStats(startDate, endDate) {
+            try {
+                this.loadingOrder = true;
+                const res = await orderService.getDailyStats(startDate, endDate);
+                if (res.status === 200) {
+                    this.dailyStats = res.data;
+                    return res.data;
+                }
+            } catch (error) {
+                toastify('Lỗi khi lấy thống kê theo ngày', 'error');
+                console.error(error);
+                return [];
+            } finally {
+                this.loadingOrder = false;
+            }
+        },
+
+        // Thống kê doanh thu theo tuần
+        async fetchWeeklyStats(startDate, endDate) {
+            try {
+                this.loadingOrder = true;
+                const res = await orderService.getWeeklyStats(startDate, endDate);
+                if (res.status === 200) {
+                    this.weeklyStats = res.data;
+                    return res.data;
+                }
+            } catch (error) {
+                toastify('Lỗi khi lấy thống kê theo tuần', 'error');
+                console.error(error);
+                return [];
+            } finally {
+                this.loadingOrder = false;
+            }
+        },
+
+        // Thống kê doanh thu theo tháng
+        async fetchMonthlyStats(startDate, endDate) {
+            try {
+                this.loadingOrder = true;
+                const res = await orderService.getMonthlyStats(startDate, endDate);
+                if (res.status === 200) {
+                    this.monthlyStats = res.data;
+                    return res.data;
+                }
+            } catch (error) {
+                toastify('Lỗi khi lấy thống kê theo tháng', 'error');
+                console.error(error);
+                return [];
+            } finally {
+                this.loadingOrder = false;
+            }
+        },
+
+        // Thống kê sản phẩm bán được
+        async fetchProductSalesStats(startDate, endDate) {
+            try {
+                this.loadingOrder = true;
+                const res = await orderService.getProductSalesStats(startDate, endDate);
+                if (res.status === 200) {
+                    this.productSalesStats = res.data;
+                    return res.data;
+                }
+            } catch (error) {
+                toastify('Lỗi khi lấy thống kê sản phẩm', 'error');
+                console.error(error);
+                return [];
             } finally {
                 this.loadingOrder = false;
             }
