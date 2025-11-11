@@ -31,6 +31,8 @@ const priceSort = ref(0);
 const titleSort = ref(0);
 const discountSort = ref(0);
 
+const isSearch = ref(false);
+
 nextTick(async () => {
   await categoryStore.fecthGetAll();
   await productStore.fetchGetAll(page.value - 1, perPage.value);
@@ -42,7 +44,21 @@ nextTick(async () => {
 watch(
   () => page.value,
   async () => {
-    await productStore.fetchGetAll(page.value - 1, perPage.value);
+    if (isSearch.value) {
+      await productStore.fetchFilterProduct(
+        keyword.value,
+        page.value - 1,
+        perPage.value,
+        discount.value,
+        title.value,
+        price.value,
+        categoryId.value,
+        isStock.value,
+        productIdSearch.value
+      );
+    } else {
+      await productStore.fetchGetAll(page.value - 1, perPage.value);
+    }
     productsData.value = productStore.products?.data;
     page.value = productStore.products?.pagination?.page + 1;
     totalPage.value = productStore.products?.pagination?.lastPage + 1;
@@ -104,6 +120,7 @@ const filterProduct = async () => {
     productIdSearch.value
   );
   totalPage.value = productStore.products?.pagination?.lastPage + 1;
+  isSearch.value = true;
 };
 
 const sortBy = (column) => {

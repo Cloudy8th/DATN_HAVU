@@ -38,16 +38,8 @@ public interface ProductRepository extends JpaRepository<Product, String> {
             "and (lower(p.title) like lower(concat('%', :keyword, '%')) or :keyword is null) " +
             "and (:categoryId is null or p.category.id = :categoryId) " +
             "and (:isStock = false or p.quantity > 0) " +
-            "and (:productId is null or p.id = :productId) " +
-            "order by CASE WHEN :title = 'asc' THEN p.title END ASC, " +
-            "CASE WHEN :title = 'desc' THEN p.title END DESC NULLS LAST, " +
-            "CASE WHEN :discount = 'asc' THEN p.discount END ASC, " +
-            "CASE WHEN :discount = 'desc' THEN p.discount END DESC NULLS LAST, " +
-            "CASE WHEN :price = 'asc' THEN p.salePrice END ASC, " +
-            "CASE WHEN :price = 'desc' THEN p.salePrice END DESC NULLS LAST," +
-            "p.createdAt DESC")
-    Page<Product> findAllByFilter(String keyword, String title, String discount, String price,
-                                  String productId, UUID categoryId, boolean isStock,
+            "and (:productId is null or p.id = :productId) ")
+    Page<Product> findAllByFilter(String keyword, String productId, UUID categoryId, boolean isStock,
                                   Pageable pageable);
 
     @Query("select pr " +

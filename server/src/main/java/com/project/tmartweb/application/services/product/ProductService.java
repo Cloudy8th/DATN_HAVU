@@ -13,6 +13,7 @@ import com.project.tmartweb.domain.entities.ProductIdGenerator;
 import com.project.tmartweb.domain.paginate.BasePagination;
 import com.project.tmartweb.domain.paginate.Pagination;
 import com.project.tmartweb.domain.paginate.PaginationDTO;
+import com.project.tmartweb.utils.PaginationUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -20,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,6 +34,7 @@ public class ProductService implements IProductService {
     private final OrderDetailRepository orderDetailRepository;
     private final ModelMapper mapper;
     private final ProductIdGenerator productIdGenerator;
+    private final PaginationUtils paginationUtils;
 
     @Override
     public PaginationDTO<Product> getAllProductsByCategory(UUID categoryId, Integer page, Integer perPage) {
@@ -107,10 +110,18 @@ public class ProductService implements IProductService {
             boolean isStock,
             Integer page,
             Integer perPage) {
+        String productIdQuery = null;
+        if (productId != null && !productId.isBlank()) {
+            productIdQuery = productId;
+        }
+        List<Sort.Order> orders = new ArrayList<>();
+        paginationUtils.addOrderIfPresent(orders, "title", title);
+        paginationUtils.addOrderIfPresent(orders, "discount", discount);
+        paginationUtils.addOrderIfPresent(orders, "salePrice", price);
+        orders.add(new Sort.Order(Sort.Direction.DESC, "createdAt"));
         Page<Product> products = productRepository.findAllByFilter(
-                keyword, title, discount, price,
-                productId, categoryId, isStock,
-                PageRequest.of(page, perPage));
+                keyword, productIdQuery, categoryId, isStock,
+                PageRequest.of(page, perPage, Sort.by(orders)));
         BasePagination<Product, ProductRepository> pagination = new BasePagination<>();
         return pagination.paginate(page, perPage, products);
     }
