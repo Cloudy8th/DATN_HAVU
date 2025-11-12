@@ -32,6 +32,24 @@ public class OrdersController {
 
     private final IOrderExportService orderExportService;
 
+    private Timestamp parseTimestamp(String dateString) {
+        if (dateString == null || dateString.isEmpty()) {
+            return null;
+        }
+
+        // FIX 1: Replace '+' with ' ' for correct Timestamp conversion
+        String cleanDateString = dateString.replace('+', ' ');
+
+        // FIX 2: Check for end-of-day logic (dành cho endDate)
+        // Nếu client truyền ngày-tháng-năm 00:00:00, ta muốn nó là 23:59:59 để bao gồm cả ngày đó.
+        if (cleanDateString.endsWith("00:00:00")) {
+            String datePart = cleanDateString.substring(0, cleanDateString.lastIndexOf("00:00:00"));
+            return Timestamp.valueOf(datePart + "23:59:59");
+        }
+
+        return Timestamp.valueOf(cleanDateString);
+    }
+
     @Autowired
     public OrdersController(IOrderService orderService, IOrderExportService orderExportService) {
         this.orderService = orderService;
@@ -117,13 +135,13 @@ public class OrdersController {
     }
 
     @GetMapping("/stats/daily")
-    @RoleAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RevenueByDate>> getDailyStats(
             @RequestParam(name = "startDate", required = false) String startDate,
             @RequestParam(name = "endDate", required = false) String endDate
     ) {
-        Timestamp start = (startDate != null && !startDate.isEmpty()) ? Timestamp.valueOf(startDate) : null;
-        Timestamp end = (endDate != null && !endDate.isEmpty()) ? Timestamp.valueOf(endDate) : null;
+        Timestamp start = parseTimestamp(startDate);
+        Timestamp end = parseTimestamp(endDate);
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getDailyStats(start, end));
     }
 
@@ -131,13 +149,13 @@ public class OrdersController {
      * Láº¥y thá»‘ng kÃª doanh thu theo tuáº§n trong má»™t khoáº£ng thá»i gian.
      */
     @GetMapping("/stats/weekly")
-    @RoleAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RevenueByWeek>> getWeeklyStats(
             @RequestParam(name = "startDate", required = false) String startDate,
             @RequestParam(name = "endDate", required = false) String endDate
     ) {
-        Timestamp start = (startDate != null && !startDate.isEmpty()) ? Timestamp.valueOf(startDate) : null;
-        Timestamp end = (endDate != null && !endDate.isEmpty()) ? Timestamp.valueOf(endDate) : null;
+        Timestamp start = parseTimestamp(startDate);
+        Timestamp end = parseTimestamp(endDate);
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getWeeklyStats(start, end));
     }
 
@@ -145,13 +163,13 @@ public class OrdersController {
      * Láº¥y thá»‘ng kÃª doanh thu theo thÃ¡ng trong má»™t khoáº£ng thá»i gian.
      */
     @GetMapping("/stats/monthly")
-    @RoleAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<Statistical>> getMonthlyStats(
             @RequestParam(name = "startDate", required = false) String startDate,
             @RequestParam(name = "endDate", required = false) String endDate
     ) {
-        Timestamp start = (startDate != null && !startDate.isEmpty()) ? Timestamp.valueOf(startDate) : null;
-        Timestamp end = (endDate != null && !endDate.isEmpty()) ? Timestamp.valueOf(endDate) : null;
+        Timestamp start = parseTimestamp(startDate);
+        Timestamp end = parseTimestamp(endDate);
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getMonthlyStats(start, end));
     }
 
@@ -159,18 +177,18 @@ public class OrdersController {
      * Láº¥y thá»‘ng kÃª sá»‘ lÆ°á»£ng & doanh thu theo tá»«ng sáº£n pháº©m trong má»™t khoáº£ng thá»i gian.
      */
     @GetMapping("/stats/products")
-    @RoleAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProductSalesStatistical>> getProductSalesStats(
             @RequestParam(name = "startDate", required = false) String startDate,
             @RequestParam(name = "endDate", required = false) String endDate
     ) {
-        Timestamp start = (startDate != null && !startDate.isEmpty()) ? Timestamp.valueOf(startDate) : null;
-        Timestamp end = (endDate != null && !endDate.isEmpty()) ? Timestamp.valueOf(endDate) : null;
+        Timestamp start = parseTimestamp(startDate);
+        Timestamp end = parseTimestamp(endDate);
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getProductSalesStats(start, end));
     }
 
     @GetMapping("/export/{orderId}")
-    @RoleAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     public void export(@PathVariable UUID orderId, HttpServletResponse response) {
         Order order = orderService.getById(orderId);
         response.setContentType("application/pdf");
@@ -180,7 +198,7 @@ public class OrdersController {
     }
 
     @GetMapping("/filter")
-    @RoleAdmin
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> filterOrders(
             @RequestParam(name = "startDate", required = false) String startDate,
             @RequestParam(name = "endDate", required = false) String endDate,
@@ -188,13 +206,11 @@ public class OrdersController {
             @RequestParam(name = "page", required = false) Integer page,
             @RequestParam(name = "perPage", required = false) Integer perPage
     ) {
-        Timestamp start = null;
-        Timestamp end = null;
-        if (startDate != null) {
-            start = Timestamp.valueOf(startDate);
-        }
-        if (endDate != null) {
-            end = Timestamp.valueOf(endDate);
+        Timestamp start = parseTimestamp(startDate);
+        Timestamp end = parseTimestamp(endDate);
+
+        if (start != null && end == null) {
+            end = new Timestamp(System.currentTimeMillis());
         }
         return ResponseEntity.status(HttpStatus.OK).body(
                 orderService.getAllByFilter(start, end, status, page, perPage));

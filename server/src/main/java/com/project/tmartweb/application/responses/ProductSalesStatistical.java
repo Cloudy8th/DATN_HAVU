@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class ProductSalesStatistical {
-    private UUID productId;
+    private String productId;
     private String productTitle;
     private Long totalQuantitySold;
     private Double totalRevenue;

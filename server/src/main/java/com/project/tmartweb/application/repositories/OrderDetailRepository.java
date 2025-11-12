@@ -21,10 +21,15 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
 
     List<OrderDetail> findAllByProduct(Product product);
 
-    @Query("SELECT NEW com.project.tmartweb.application.responses.ProductSalesStatistical(od.product.id, od.product.title, SUM(od.quantity), SUM(od.totalMoney)) " +
-            "FROM OrderDetail od JOIN od.order o " + // JOIN vá»›i Order Ä‘á»ƒ lá»c status
-            "WHERE o.status = 'SHIPPED' AND o.createdAt BETWEEN :startDate AND :endDate " + // Chá»‰ tÃ­nh cÃ¡c Ä‘Æ¡n Ä‘Ã£ giao
-            "GROUP BY od.product.id, od.product.title " + // NhÃ³m theo sáº£n pháº©m
-            "ORDER BY SUM(od.quantity) DESC") // Sáº¯p xáº¿p theo sá»‘ lÆ°á»£ng bÃ¡n cháº¡y nháº¥t
+    @Query("SELECT NEW com.project.tmartweb.application.responses.ProductSalesStatistical(" +
+            "od.product.id, " +
+            "od.product.title, " +
+            "CAST(SUM(od.quantity) AS long), " +    // FIX: Ép kiểu sang long
+            "CAST(SUM(od.totalMoney) AS double)) " + // FIX: Ép kiểu sang double
+            "FROM OrderDetail od JOIN od.order o " +
+            // FIX: Sử dụng hằng số Enum JPQL
+            "WHERE o.status = com.project.tmartweb.domain.enums.OrderStatus.SHIPPED AND o.createdAt BETWEEN :startDate AND :endDate " +
+            "GROUP BY od.product.id, od.product.title " +
+            "ORDER BY SUM(od.quantity) DESC")
     List<ProductSalesStatistical> statisticalByProduct(@Param("startDate") Timestamp startDate, @Param("endDate") Timestamp endDate);
 }

@@ -51,6 +51,28 @@ class orderService extends baseService {
         });
         return res;
     }
+
+// FIX: Add missing client-side method for daily stats
+    async getDailyStats(startDate, endDate) {
+        const res = await axios.get(`${this.endpoint}/stats/daily`, {
+            params: {
+                startDate: startDate,
+                endDate: endDate
+            }
+        });
+        return res;
+    }
+
+    // FIX: Add missing client-side method for product sales stats
+    async getProductSalesStats(startDate, endDate) {
+        const res = await axios.get(`${this.endpoint}/stats/products`, {
+            params: {
+                startDate: startDate,
+                endDate: endDate
+            }
+        });
+        return res;
+    }
 }
 
 export default new orderService();
