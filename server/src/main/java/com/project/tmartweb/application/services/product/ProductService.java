@@ -7,7 +7,6 @@ import com.project.tmartweb.config.exceptions.InvalidParamException;
 import com.project.tmartweb.config.exceptions.NotFoundException;
 import com.project.tmartweb.domain.dtos.ProductDTO;
 import com.project.tmartweb.domain.entities.Category;
-import com.project.tmartweb.domain.entities.OrderDetail;
 import com.project.tmartweb.domain.entities.Product;
 import com.project.tmartweb.domain.entities.ProductIdGenerator;
 import com.project.tmartweb.domain.paginate.BasePagination;
@@ -46,10 +45,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public PaginationDTO<Product> getAllDeleted(
-            Integer page,
-            Integer perPage
-    ) {
+    public PaginationDTO<Product> getAllDeleted(Integer page, Integer perPage) {
         if (page == null || perPage == null) {
             List<Product> products = productRepository.findAllByDeleted(
                     true,
@@ -59,10 +55,7 @@ public class ProductService implements IProductService {
         }
         Page<Product> pageData = productRepository.findAllByDeleted(
                 true,
-                PageRequest.of(
-                        page,
-                        perPage,
-                        Sort.by("createdAt").descending()));
+                PageRequest.of(page, perPage, Sort.by("createdAt").descending()));
         setSoldQuantity(pageData.getContent());
         BasePagination<Product, ProductRepository> pagination = new BasePagination<>(productRepository);
         return pagination.paginate(page, perPage, pageData);
@@ -85,13 +78,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public PaginationDTO<Product> getAllBySearch(
-            String keyword,
-            String feedback,
-            String price,
-            Integer page,
-            Integer perPage
-    ) {
+    public PaginationDTO<Product> getAllBySearch(String keyword, String feedback, String price, Integer page, Integer perPage) {
         Page<Product> products = productRepository.findAllBySearch(
                 keyword, feedback, price,
                 PageRequest.of(page, perPage));
@@ -100,16 +87,9 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public PaginationDTO<Product> getAllByFilter(
-            String keyword,
-            String title,
-            String discount,
-            String price,
-            String productId,
-            UUID categoryId,
-            boolean isStock,
-            Integer page,
-            Integer perPage) {
+    public PaginationDTO<Product> getAllByFilter(String keyword, String title, String discount, String price,
+                                                 String productId, UUID categoryId, boolean isStock,
+                                                 Integer page, Integer perPage) {
         String productIdQuery = null;
         if (productId != null && !productId.isBlank()) {
             productIdQuery = productId;
@@ -122,6 +102,7 @@ public class ProductService implements IProductService {
         Page<Product> products = productRepository.findAllByFilter(
                 keyword, productIdQuery, categoryId, isStock,
                 PageRequest.of(page, perPage, Sort.by(orders)));
+        setSoldQuantity(products.getContent());
         BasePagination<Product, ProductRepository> pagination = new BasePagination<>();
         return pagination.paginate(page, perPage, products);
     }
@@ -135,7 +116,7 @@ public class ProductService implements IProductService {
         double originPrice = product.getOriginPrice();
         if (salePrice > originPrice) {
             throw new InvalidParamException("Giá bán không thể lớn hơn giá gốc",
-                                            "Sale price must be less than or equal to origin price");
+                    "Sale price must be less than or equal to origin price");
         }
         if (salePrice > 0 && salePrice != product.getOriginPrice()) {
             discount = 100 - ((salePrice / product.getOriginPrice()) * 100);
@@ -158,7 +139,7 @@ public class ProductService implements IProductService {
         double originPrice = product.getOriginPrice();
         if (salePrice > originPrice) {
             throw new InvalidParamException("Giá bán không thể lớn hơn giá gốc",
-                                            "Sale price must be less than or equal to origin price");
+                    "Sale price must be less than or equal to origin price");
         }
         if (salePrice > 0 && salePrice != originPrice) {
             discount = 100 - ((salePrice / product.getOriginPrice()) * 100);
@@ -179,21 +160,16 @@ public class ProductService implements IProductService {
     @Override
     public PaginationDTO<Product> getAll(Integer page, Integer perPage) {
         if (page == null || perPage == null) {
-            List<Product> products = productRepository.findAllByDeleted(
-                    false,
-                    Sort.by("createdAt").descending());
+            List<Product> products = productRepository.findAllByDeleted(false, Sort.by("createdAt").descending());
             setSoldQuantity(products);
             return new PaginationDTO<>(products, null);
         }
         Page<Product> pageData = productRepository.findAllByDeleted(
                 false,
-                PageRequest.of(
-                        page,
-                        perPage,
-                        Sort.by("createdAt").descending()));
+                PageRequest.of(page, perPage, Sort.by("createdAt").descending()));
         setSoldQuantity(pageData.getContent());
         Pagination pagination = new Pagination(page, perPage, pageData.getTotalPages() - 1,
-                                               pageData.getTotalElements());
+                pageData.getTotalElements());
         return new PaginationDTO<>(pageData.getContent(), pagination);
     }
 
@@ -205,13 +181,12 @@ public class ProductService implements IProductService {
     @Override
     public Product getById(String id) {
         Product product = findById(id).orElseThrow(() -> new NotFoundException("Product not found"));
-        setSoldQuantity(List.of(product));
+        setSoldQuantity(List.of(product)); // Cập nhật số lượng đã bán (chỉ tính đơn SHIPPED)
         return product;
     }
 
     @Override
     public List<Product> insertMultiple(List<ProductDTO> productDTOS) {
-
         return List.of();
     }
 
@@ -225,10 +200,12 @@ public class ProductService implements IProductService {
         return 0;
     }
 
+    // ✅ FIXED METHOD: chỉ tính số lượng bán cho đơn hàng đã giao (SHIPPED)
     private void setSoldQuantity(List<Product> products) {
         for (Product product : products) {
-            List<OrderDetail> orderDetails = orderDetailRepository.findAllByProduct(product);
-            product.setSoldQuantity(orderDetails.size());
+            // Sử dụng phương thức mới trong OrderDetailRepository
+            Long soldQuantity = orderDetailRepository.sumSoldQuantityByProduct(product);
+            product.setSoldQuantity(soldQuantity != null ? soldQuantity.intValue() : 0);
         }
     }
 }

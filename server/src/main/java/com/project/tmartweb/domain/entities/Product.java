@@ -73,6 +73,9 @@ public class Product {
     @Column(name = "updated_by")
     private String updatedBy;
 
+    public void setSold(int i) {
+    }
+
 //    @PrePersist
 //    private void prePersist() {
 //        if (id == null || id.isEmpty()) {

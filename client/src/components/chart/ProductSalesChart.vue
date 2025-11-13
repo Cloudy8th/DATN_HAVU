@@ -38,6 +38,8 @@ const CATEGORY_COLORS = {
   "điện thoại": "#6366f1",
 };
 
+// ============ THÊM DROPDOWN LỌC ============
+const timeRange = ref("day"); // day, week, month
 const dateRange = ref([
   new Date(new Date().setDate(new Date().getDate() - 7)),
   new Date(),
@@ -88,6 +90,8 @@ const fetchProductData = async () => {
   const endDate = formatTimestamp(dateRange.value[1]);
 
   console.log('🔍 Fetching product stats...');
+  console.log('Time Range:', timeRange.value);
+  console.log('Date Range:', startDate, '-', endDate);
 
   try {
     const statsData = await orderStore.fetchProductSalesStats(startDate, endDate);
@@ -125,7 +129,8 @@ const fetchProductData = async () => {
   }
 };
 
-watch(dateRange, fetchProductData, { deep: true });
+// ============ WATCH CẢ timeRange VÀ dateRange ============
+watch([timeRange, dateRange], fetchProductData, { deep: true });
 onMounted(() => { fetchProductData(); });
 </script>
 
@@ -134,6 +139,13 @@ onMounted(() => { fetchProductData(); });
     <div class="chart-header">
       <h3>📦 Thống kê số lượng hàng hóa bán</h3>
       <div class="filters">
+        <!-- ============ THÊM DROPDOWN LỌC ============ -->
+        <select v-model="timeRange" class="time-range-select">
+          <option value="day">Theo ngày</option>
+          <option value="week">Theo tuần</option>
+          <option value="month">Theo tháng</option>
+        </select>
+        
         <VueDatePicker 
           v-model="dateRange" 
           range 
@@ -165,7 +177,10 @@ onMounted(() => { fetchProductData(); });
   border-radius: 8px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-bottom: 24px;
+  /* ============ CHIỀU CAO CỐ ĐỊNH ============ */
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .chart-header {
@@ -188,25 +203,44 @@ onMounted(() => { fetchProductData(); });
   display: flex;
   gap: 12px;
   align-items: center;
+  flex-wrap: wrap;
+}
+
+/* ============ STYLE CHO DROPDOWN ============ */
+.time-range-select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  cursor: pointer;
+  background: white;
+  transition: all 0.2s;
+}
+
+.time-range-select:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
 .loading {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 400px;
+  flex: 1;
 }
 
 .chart-container {
-  height: 500px;
+  flex: 1;
   position: relative;
+  min-height: 400px;
 }
 
 .no-data {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 400px;
+  flex: 1;
   color: #6b7280;
 }
 </style>
