@@ -20,6 +20,9 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 const orderStore = useOrderStore();
 const { loadingOrder } = storeToRefs(orderStore);
 
+/* ========================================
+   DANH MỤC SẢN PHẨM
+======================================== */
 const PRODUCT_CATEGORIES = [
   "tai nghe", "chuột", "bàn phím", "camera", "máy tính bảng",
   "linh kiện", "màn hình", "pc", "laptop", "điện thoại"
@@ -38,13 +41,39 @@ const CATEGORY_COLORS = {
   "điện thoại": "#6366f1",
 };
 
-// ============ THÊM DROPDOWN LỌC ============
-const timeRange = ref("day"); // day, week, month
+/* ========================================
+   THỜI GIAN LỌC (FILTER)
+======================================== */
+const timeRange = ref("day");
 const dateRange = ref([
   new Date(new Date().setDate(new Date().getDate() - 7)),
   new Date(),
 ]);
 
+// Hàm sinh start/end ngày
+const calculateDateRange = (filter) => {
+  const now = new Date();
+  let start = new Date(now);
+
+  if (filter === "day") {
+    start.setHours(0, 0, 0, 0);
+  } else if (filter === "week") {
+    start.setDate(now.getDate() - 7);
+  } else if (filter === "month") {
+    start.setDate(now.getDate() - 30);
+  }
+
+  return [start, now];
+};
+
+// Tự đổi date theo filter
+watch(timeRange, (newFilter) => {
+  dateRange.value = calculateDateRange(newFilter);
+});
+
+/* ========================================
+   CHART
+======================================== */
 const chartData = reactive({
   labels: [],
   datasets: [],
@@ -57,46 +86,50 @@ const chartOptions = ref({
     legend: { display: true, position: "top" },
     tooltip: {
       callbacks: {
-        label: function(context) {
-          return `${context.dataset.label}: ${context.parsed.y} sản phẩm`;
-        }
-      }
-    }
+        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y} sản phẩm`,
+      },
+    },
   },
   scales: {
-    y: { beginAtZero: true, ticks: { stepSize: 1 } }
-  }
+    y: { beginAtZero: true, ticks: { stepSize: 1 } },
+  },
 });
 
 const formatTimestamp = (date) => {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
   return `${year}-${month}-${day} 00:00:00`;
 };
 
+/* ========================================
+   PHÂN LOẠI SẢN PHẨM
+======================================== */
 const categorizeProduct = (productTitle) => {
   const title = productTitle.toLowerCase();
+
   for (const category of PRODUCT_CATEGORIES) {
     if (title.includes(category)) return category;
   }
+
+  const phoneBrands = ["iphone", "samsung", "xiaomi", "oppo", "realme", "vsmart", "mobile", "phone"];
+  if (phoneBrands.some((kw) => title.includes(kw))) return "điện thoại";
+
   return "khác";
 };
 
+/* ========================================
+   FETCH DATA
+======================================== */
 const fetchProductData = async () => {
   if (!dateRange.value || dateRange.value.length < 2) return;
 
   const startDate = formatTimestamp(dateRange.value[0]);
   const endDate = formatTimestamp(dateRange.value[1]);
 
-  console.log('🔍 Fetching product stats...');
-  console.log('Time Range:', timeRange.value);
-  console.log('Date Range:', startDate, '-', endDate);
-
   try {
     const statsData = await orderStore.fetchProductSalesStats(startDate, endDate);
-    console.log('✅ Product stats:', statsData);
-    
+
     if (!statsData || statsData.length === 0) {
       chartData.labels = [];
       chartData.datasets = [];
@@ -104,55 +137,58 @@ const fetchProductData = async () => {
     }
 
     const categoryData = {};
-    PRODUCT_CATEGORIES.forEach(cat => { categoryData[cat] = 0; });
+    PRODUCT_CATEGORIES.forEach((cat) => (categoryData[cat] = 0));
 
-    statsData.forEach(item => {
+    statsData.forEach((item) => {
       const category = categorizeProduct(item.productTitle);
       if (category !== "khác") {
         categoryData[category] += item.totalQuantitySold || 0;
       }
     });
 
-    chartData.labels = PRODUCT_CATEGORIES.map(cat => 
-      cat.charAt(0).toUpperCase() + cat.slice(1)
+    chartData.labels = PRODUCT_CATEGORIES.map(
+      (cat) => cat.charAt(0).toUpperCase() + cat.slice(1)
     );
-    
-    chartData.datasets = [{
-      label: "Số lượng bán",
-      backgroundColor: Object.values(CATEGORY_COLORS),
-      data: PRODUCT_CATEGORIES.map(cat => categoryData[cat]),
-      borderRadius: 4,
-    }];
 
+    chartData.datasets = [
+      {
+        label: "Số lượng bán",
+        backgroundColor: Object.values(CATEGORY_COLORS),
+        data: PRODUCT_CATEGORIES.map((cat) => categoryData[cat]),
+        borderRadius: 4,
+      },
+    ];
   } catch (error) {
-    console.error("❌ Error:", error);
+    console.error("❌ Lỗi fetch thống kê:", error);
   }
 };
 
-// ============ WATCH CẢ timeRange VÀ dateRange ============
 watch([timeRange, dateRange], fetchProductData, { deep: true });
-onMounted(() => { fetchProductData(); });
+onMounted(() => fetchProductData());
 </script>
 
 <template>
   <div class="product-chart-wrapper">
     <div class="chart-header">
       <h3>📦 Thống kê số lượng hàng hóa bán</h3>
+
       <div class="filters">
-        <!-- ============ THÊM DROPDOWN LỌC ============ -->
-        <select v-model="timeRange" class="time-range-select">
-          <option value="day">Theo ngày</option>
-          <option value="week">Theo tuần</option>
-          <option value="month">Theo tháng</option>
-        </select>
-        
-        <VueDatePicker 
-          v-model="dateRange" 
-          range 
+        <div class="filter-inline">
+          <select v-model="timeRange" class="time-range-select">
+            <option value="day">Theo ngày</option>
+            <option value="week">Theo tuần</option>
+            <option value="month">Theo tháng</option>
+          </select>
+        </div>
+
+        <VueDatePicker
+          v-model="dateRange"
+          range
           placeholder="Chọn khoảng thời gian"
           format="dd/MM/yyyy"
           :enable-time-picker="false"
           auto-apply
+          class="date-picker-compact"
         />
       </div>
     </div>
@@ -177,28 +213,19 @@ onMounted(() => { fetchProductData(); });
   border-radius: 8px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  /* ============ CHIỀU CAO CỐ ĐỊNH ============ */
-  height: 100%;
+
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 16px;
+.chart-container {
+  flex: 1;
+  min-height: 400px;
+  position: relative;
 }
 
-.chart-header h3 {
-  margin: 0;
-  font-size: 20px;
-  color: #1f2937;
-  font-weight: 600;
-}
-
+/* FILTER UI */
 .filters {
   display: flex;
   gap: 12px;
@@ -206,41 +233,29 @@ onMounted(() => { fetchProductData(); });
   flex-wrap: wrap;
 }
 
-/* ============ STYLE CHO DROPDOWN ============ */
+.filter-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
 .time-range-select {
-  padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  height: 36px;
+  padding: 6px 10px;
   border-radius: 6px;
-  font-size: 14px;
-  outline: none;
-  cursor: pointer;
+  border: 1px solid #d1d5db;
   background: white;
-  transition: all 0.2s;
+  font-size: 14px;
 }
 
-.time-range-select:focus {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+.date-picker-compact {
+  max-width: 260px;
 }
 
-.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-}
-
-.chart-container {
-  flex: 1;
-  position: relative;
-  min-height: 400px;
-}
-
-.no-data {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1;
-  color: #6b7280;
+@media (max-width: 480px) {
+  .filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>
