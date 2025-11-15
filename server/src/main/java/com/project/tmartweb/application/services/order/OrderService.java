@@ -77,7 +77,7 @@ public class OrderService implements IOrderService {
         for (CartDTO cartDTO : orderDTO.getCartItems()) {
             Product product = productService.getById(cartDTO.getProductId());
             if (product.getQuantity() < cartDTO.getQuantity()) {
-                throw new InvalidParamException("SoÌ‚Ì luÌ›oÌ›Ì£ng saÌ‰n phaÌ‚Ì‰m trong kho khoÌ‚ng Ä‘uÌ‰",
+                throw new InvalidParamException("Số lượng sản phẩm trong kho không đủ",
                         "Quantity not enough");
             }
             OrderDetail orderDetail = mapper.map(cartDTO, OrderDetail.class);
@@ -98,9 +98,8 @@ public class OrderService implements IOrderService {
         order.setStatus(OrderStatus.PENDING);
         Notification notification = new Notification();
         notification.setOrder(order);
-        notification.setTitle("ÄÆ¡n hÃ ng Ä‘Ã£ táº¡o thÃ nh cÃ´ng");
-        notification.setContent("ÄÆ¡n hÃ ng " + order.getId() + " Ä‘Ã£ Ä‘Æ°á»£c táº¡o thÃ nh cÃ´ng. " +
-                " Báº¡n cÃ³ thá»ƒ theo dÃµi Ä‘Æ¡n hÃ ng táº¡i Ä‘Ã¢y.");
+        notification.setTitle("Đơn hàng đã tạo thành công");
+        notification.setContent("Đơn hàng " + order.getId() + " đã được tạo thành công. Bạn có thể theo dõi đơn hàng tại đây.");
         notification.setUser(user);
         notificationRepository.save(notification);
         order.setTotalMoney(Calculator.totalMoneyOrder(orderDetails, discount));
@@ -117,24 +116,27 @@ public class OrderService implements IOrderService {
             notification.setUser(order.getUser());
             notification.setOrder(order);
             if (orderDTO.getStatus() == OrderStatus.PROCESSED) {
-                notification.setTitle("ÄÆ¡n hÃ ng Ä‘Ã£ xá»­ lÃ½ thÃ nh cÃ´ng.");
-                notification.setContent("ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c xá»­ lÃ½ thÃ nh cÃ´ng. " +
-                        " ChÃºng tÃ´i sáº½ giao cho Ä‘Æ¡n vá»‹ váº­n chuyá»ƒn trong thá»i gian sá»›m nháº¥t.");
+                notification.setTitle("Đơn hàng đã xử lý thành công.");
+                notification.setContent("Đơn hàng của bạn đã được xử lý thành công. " +
+                        "Chúng tôi sẽ giao cho đơn vị vận chuyển trong thời gian sớm nhất."
+                );
             }
             if (orderDTO.getStatus() == OrderStatus.SHIPPING) {
-                notification.setTitle("ÄÆ¡n hÃ ng Ä‘ang Ä‘Æ°á»£c giao.");
-                notification.setContent("ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c giao cho Ä‘Æ¡n vá»‹ váº­n chuyá»ƒn. " +
-                        " HÃ£y chÃº Ã½ Ä‘iá»‡n thoáº¡i nhÃ©, Ä‘Æ¡n hÃ ng sáº½ Ä‘Æ°á»£c giao tá»›i báº¡n trong thá»i gian sá»›m nháº¥t cÃ³ thá»ƒ.");
+                notification.setTitle("Đơn hàng đang được giao.");
+                notification.setContent("Đơn hàng của bạn đã được giao cho đơn vị vận chuyển. " +
+                        " Hãy chú ý điện thoại nhé, đơn hàng sẽ được giao tới bạn trong thời gian sớm nhất có thể."
+                );
             }
             if (orderDTO.getStatus() == OrderStatus.SHIPPED) {
-                notification.setTitle("ÄÆ¡n hÃ ng Ä‘Ã£ giao thÃ nh cÃ´ng.");
-                notification.setContent("ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c giao thÃ nh cÃ´ng. " +
-                        " HÃ£y Ä‘Ã¡nh tráº£i nghiá»‡m, Ä‘Ã¡nh giÃ¡ sáº£n pháº©m vÃ  náº¿u cÃ³ lá»—i gÃ¬ hÃ£y liÃªn há»‡ vá»›i chÃºng tÃ´i ngay nhÃ©.");
+                notification.setTitle("Đơn hàng đã giao thành công.");
+                notification.setContent("Đơn hàng của bạn đã được giao thành công. " +
+                        " Hãy đánh trải nghiệm, đánh giá sản phẩm và nếu có lỗi gì hãy liên hệ với chúng tôi ngay nhé."
+                );
                 this.sendMailShippedOrder(order);
             }
             if (orderDTO.getStatus() == OrderStatus.CANCELLED) {
-                notification.setTitle("ÄÆ¡n hÃ ng Ä‘Ã£ há»§y thÃ nh cÃ´ng.");
-                notification.setContent("ÄÆ¡n hÃ ng cá»§a báº¡n Ä‘Ã£ Ä‘Æ°á»£c há»§y thÃ nh cÃ´ng. ");
+                notification.setTitle("Đơn hàng đã hủy thành công.");
+                notification.setContent("Đơn hàng của bạn đã được hủy thành công.");
                 for (OrderDetail orderDetail : order.getOrderDetails()) {
                     Product product = orderDetail.getProduct();
                     product.setQuantity(product.getQuantity() + orderDetail.getQuantity());
@@ -174,7 +176,7 @@ public class OrderService implements IOrderService {
 
     @Override
     public Order getById(UUID id) {
-        return findById(id).orElseThrow(() -> new NotFoundException("ÄÆ¡n hÃ ng khÃ´ng tÃ´n táº¡i!", "Order not found"));
+        return findById(id).orElseThrow(() -> new NotFoundException("Đơn hàng không tồn tại!", "Order not found"));
     }
 
     @Override
@@ -297,7 +299,7 @@ public class OrderService implements IOrderService {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String mailTo = order.getUser().getEmail();
-        String subject = "Táº¡o Ä‘Æ¡n hÃ ng hÃ ng thÃ nh cÃ´ng";
+        String subject = "Tạo đơn hàng thành công";
         Map<String, Object> context = new HashMap<>();
         Timestamp orderDate = order.getCreatedAt();
         LocalDateTime dateTime = Instant.ofEpochMilli(orderDate.getTime())
@@ -340,7 +342,7 @@ public class OrderService implements IOrderService {
         DecimalFormat decimalFormat = new DecimalFormat("#,###");
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
         String mailTo = order.getUser().getEmail();
-        String subject = "Giao hÃ ng thÃ nh cÃ´ng";
+        String subject = "Giao hàng thành công";
         Map<String, Object> context = new HashMap<>();
         Timestamp orderDate = order.getUpdatedAt();
         LocalDateTime dateTime = Instant.ofEpochMilli(orderDate.getTime())

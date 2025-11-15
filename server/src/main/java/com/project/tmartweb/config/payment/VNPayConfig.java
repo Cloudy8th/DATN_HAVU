@@ -22,9 +22,9 @@ import java.util.Random;
 public class VNPayConfig {
     private static final Logger log = LoggerFactory.getLogger(VNPayConfig.class);
     public static String vnpPayUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static String vnpReturnUrl = "http://localhost:8080/payment-success";
-    public static String vnpTmnCode = "WCITOV4Z";
-    public static String vnpHashSecret = "XJHAVDROUSNRD9BE4GCONQO40RVSPM5K";
+    public static String vnpReturnUrl = "http://localhost:8081/payment-success";
+    public static String vnpTmnCode = "XWONC3BY";
+    public static String vnpHashSecret = "MTWXGG98K3H8P0MYTI3XP9CMO5PVMI0I";
     public static String vnpApiUrl = "https://sandbox.vnpayment.vn/merchant_webapi/api/transaction";
 
     public static String vnpVersion = "2.1.0";
