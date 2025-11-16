@@ -30,11 +30,10 @@ public interface IOrderService extends IBaseService<Order, OrderDTO, UUID> {
 
     List<Statistical> statisticals(int year);
 
-    List<Statistical> getMonthlyStats(Timestamp startDate, Timestamp endDate);
 
     List<RevenueByDate> getDailyStats(Timestamp startDate, Timestamp endDate);
 
-    List<RevenueByWeek> getWeeklyStats(Timestamp startDate, Timestamp endDate);
+
 
     List<ProductSalesStatistical> getProductSalesStats(Timestamp startDate, Timestamp endDate);
 

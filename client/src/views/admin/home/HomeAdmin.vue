@@ -73,36 +73,35 @@ onMounted(async () => {
 
 .stat-row {
     width: 100%;
+    margin-bottom: 24px;
 }
 
-/* FIX: chiều cao bằng nhau và giảm gap */
+/* ✅ FIX: 2 frame cùng chiều cao */
 .stat-row-columns {
     display: flex;
     flex-direction: row;
-    gap: 16px; /* FIX: giảm khoảng cách */
+    gap: 16px;
     width: 100%;
     align-items: stretch;
+    min-height: 600px; /* ✅ CỐ ĐỊNH CHIỀU CAO TỐI THIỂU */
 }
 
-/* Hai cột chia đều 50% */
-.product-chart-column{
+/* Hai cột chia tỉ lệ 60-40 */
+.product-chart-column {
     flex: 6;
-    min-width: unset;
-    max-width: unset;
     display: flex;
     flex-direction: column;
 }
 
 .best-seller-column {
     flex: 4;
-    min-width: unset;
-    max-width: unset;
-    displat: flex;
+    display: flex;
     flex-direction: column;
 }
 
-/* Đảm bảo biểu đồ chiếm toàn bộ không gian trong cột */
-.product-chart-column > * {
+/* ✅ Đảm bảo component con chiếm full height */
+.product-chart-column > *,
+.best-seller-column > * {
     height: 100%;
 }
 
@@ -115,7 +114,7 @@ onMounted(async () => {
     width: 100%;
     display: flex;
     flex-direction: column;
-    min-height: 550px;
+    height: 100%; /* ✅ CHIẾM FULL HEIGHT */
 }
 
 .product-best-seller h3 {
@@ -128,6 +127,26 @@ onMounted(async () => {
 .product-best-seller-body {
     flex: 1;
     overflow-y: auto;
+    /* ✅ Custom scrollbar */
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+}
+
+.product-best-seller-body::-webkit-scrollbar {
+    width: 6px;
+}
+
+.product-best-seller-body::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.product-best-seller-body::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 3px;
+}
+
+.product-best-seller-body::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
 }
 
 .detail-body-content {
@@ -138,6 +157,13 @@ onMounted(async () => {
     display: flex;
     align-items: center;
     gap: 12px;
+    padding: 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.body-content-product:hover {
+    background-color: #f9fafb;
 }
 
 .body-content-product img {
@@ -146,6 +172,10 @@ onMounted(async () => {
     border-radius: 6px;
     object-fit: cover;
     border: 1px solid #eee;
+}
+
+.product-info {
+    flex: 1;
 }
 
 .product-name {
@@ -157,6 +187,7 @@ onMounted(async () => {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    line-height: 1.4;
 }
 
 .product-sold {

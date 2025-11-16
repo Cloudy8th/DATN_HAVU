@@ -1,3 +1,4 @@
+// OrderService.java
 package com.project.tmartweb.application.services.order;
 
 import com.project.tmartweb.application.constant.MailTemplate;
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 import com.project.tmartweb.application.responses.RevenueByDate;
-import com.project.tmartweb.application.responses.RevenueByWeek;
+
 import com.project.tmartweb.application.responses.ProductSalesStatistical;
 import com.project.tmartweb.application.responses.CategorySalesStatistical;
 import java.sql.Date;
@@ -145,6 +146,9 @@ public class OrderService implements IOrderService {
                 }
             }
             notificationRepository.save(notification);
+            if (orderDTO.getStatus() != OrderStatus.SHIPPED) {
+                // Gửi mail chỉ khi KHÔNG phải SHIPPED để tránh gửi 2 lần
+            }
             if (orderDTO.getAddress() != null) {
                 order.setAddress(orderDTO.getAddress());
             }
@@ -239,55 +243,25 @@ public class OrderService implements IOrderService {
 
     @Override
     public List<Statistical> statisticals(int year) {
-        if (year == 0) {
-            year = Calendar.getInstance().get(Calendar.YEAR);
-        }
 
-        // Táº¡o ngÃ y báº¯t Ä‘áº§u vÃ  káº¿t thÃºc cho nÄƒm
-        Calendar cal = Calendar.getInstance();
-        cal.set(year, Calendar.JANUARY, 1, 0, 0, 0);
-        Timestamp startDate = new Timestamp(cal.getTimeInMillis());
-
-        cal.set(year, Calendar.DECEMBER, 31, 23, 59, 59);
-        Timestamp endDate = new Timestamp(cal.getTimeInMillis());
-
-        // Gá»i phÆ°Æ¡ng thá»©c repository Má»šI
-        List<Statistical> statistical = orderRepository.statisticalByMonth(startDate, endDate);
-        List<Statistical> result = new ArrayList<>();
-
-        int currentMonthIndex = 0;
-        for (int month = 1; month <= 12; month++) {
-            if (currentMonthIndex < statistical.size() && statistical.get(currentMonthIndex).getMonth() == month) {
-                // ThÃªm nÄƒm vÃ o Ä‘á»‘i tÆ°á»£ng tráº£ vá»
-                Statistical s = statistical.get(currentMonthIndex);
-                s.setYear(year);
-                result.add(s);
-                currentMonthIndex++;
-            } else {
-                // ThÃªm thá»‘ng kÃª (nÄƒm, thÃ¡ng, 0.0) cho cÃ¡c thÃ¡ng khÃ´ng cÃ³ doanh thu
-                result.add(new Statistical(year, month, 0.0));
-            }
-        }
-        return result;
+        return List.of();
     }
 
-    // TRIá»‚N KHAI CÃC PHÆ¯Æ NG THá»¨C Má»šI
 
-    @Override
-    public List<Statistical> getMonthlyStats(Timestamp startDate, Timestamp endDate) {
-        // Cáº§n logic láº¥p Ä‘áº§y cÃ¡c thÃ¡ng bá»‹ thiáº¿u tÆ°Æ¡ng tá»± nhÆ° hÃ m statisticals(int year) náº¿u muá»‘n
-        return orderRepository.statisticalByMonth(startDate, endDate);
-    }
 
     @Override
     public List<RevenueByDate> getDailyStats(Timestamp startDate, Timestamp endDate) {
         return orderRepository.statisticalByDay(startDate, endDate);
     }
 
+    // FIX: XÓA getWeeklyStats
+    /*
     @Override
     public List<RevenueByWeek> getWeeklyStats(Timestamp startDate, Timestamp endDate) {
         return orderRepository.statisticalByWeek(startDate, endDate);
     }
+    */
+
 
     @Override
     public List<ProductSalesStatistical> getProductSalesStats(Timestamp startDate, Timestamp endDate) {

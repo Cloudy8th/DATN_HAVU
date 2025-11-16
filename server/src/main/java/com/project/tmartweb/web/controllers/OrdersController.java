@@ -145,33 +145,7 @@ public class OrdersController {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getDailyStats(start, end));
     }
 
-    /**
-     * Láº¥y thá»‘ng kÃª doanh thu theo tuáº§n trong má»™t khoáº£ng thá»i gian.
-     */
-    @GetMapping("/stats/weekly")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<RevenueByWeek>> getWeeklyStats(
-            @RequestParam(name = "startDate", required = false) String startDate,
-            @RequestParam(name = "endDate", required = false) String endDate
-    ) {
-        Timestamp start = parseTimestamp(startDate);
-        Timestamp end = parseTimestamp(endDate);
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.getWeeklyStats(start, end));
-    }
 
-    /**
-     * Láº¥y thá»‘ng kÃª doanh thu theo thÃ¡ng trong má»™t khoáº£ng thá»i gian.
-     */
-    @GetMapping("/stats/monthly")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<Statistical>> getMonthlyStats(
-            @RequestParam(name = "startDate", required = false) String startDate,
-            @RequestParam(name = "endDate", required = false) String endDate
-    ) {
-        Timestamp start = parseTimestamp(startDate);
-        Timestamp end = parseTimestamp(endDate);
-        return ResponseEntity.status(HttpStatus.OK).body(orderService.getMonthlyStats(start, end));
-    }
 
     /**
      * Láº¥y thá»‘ng kÃª sá»‘ lÆ°á»£ng & doanh thu theo tá»«ng sáº£n pháº©m trong má»™t khoáº£ng thá»i gian.

@@ -20,8 +20,7 @@ export const useOrderStore = defineStore('order', {
         statistical: [],
         // ===== THÊM CÁC STATE MỚI ===== //
         dailyStats: [],
-        weeklyStats: [],
-        monthlyStats: [],
+    
         productSalesStats: [],
         categorySalesStats: []
     }),
@@ -255,41 +254,7 @@ export const useOrderStore = defineStore('order', {
             }
         },
 
-        // Thống kê doanh thu theo tuần
-        async fetchWeeklyStats(startDate, endDate) {
-            try {
-                this.loadingOrder = true;
-                const res = await orderService.getWeeklyStats(startDate, endDate);
-                if (res.status === 200) {
-                    this.weeklyStats = res.data;
-                    return res.data;
-                }
-            } catch (error) {
-                toastify('Lỗi khi lấy thống kê theo tuần', 'error');
-                console.error(error);
-                return [];
-            } finally {
-                this.loadingOrder = false;
-            }
-        },
-
-        // Thống kê doanh thu theo tháng
-        async fetchMonthlyStats(startDate, endDate) {
-            try {
-                this.loadingOrder = true;
-                const res = await orderService.getMonthlyStats(startDate, endDate);
-                if (res.status === 200) {
-                    this.monthlyStats = res.data;
-                    return res.data;
-                }
-            } catch (error) {
-                toastify('Lỗi khi lấy thống kê theo tháng', 'error');
-                console.error(error);
-                return [];
-            } finally {
-                this.loadingOrder = false;
-            }
-        },
+       
 
         // Thống kê sản phẩm bán được
         async fetchProductSalesStats(startDate, endDate) {
@@ -310,19 +275,26 @@ export const useOrderStore = defineStore('order', {
         },
 
         async fetchCategorySalesStats(startDate, endDate) {
-            try {
-                this.loadingOrder = true;
-                const res = await orderService.getCategorySalesStats(startDate, endDate);
-                if (res.status === 200) {
-                    this.categorySalesStats = res.data;
-                    return res.data;
-                }
-            } catch (error) {
-                // ... (xử lý lỗi)
-                return [];
-            } finally {
-                this.loadingOrder = false;
-            }
+    try {
+        console.log('🔄 Calling API with:', { startDate, endDate });
+        this.loadingOrder = true;
+        const res = await orderService.getCategorySalesStats(startDate, endDate);
+        console.log('✅ API Response:', res);
+        console.log('✅ Response data:', res.data);
+        
+        if (res.status === 200) {
+            this.categorySalesStats = res.data;
+            console.log('✅ Store updated:', this.categorySalesStats);
+            return res.data;
         }
+    } catch (error) {
+        console.error('❌ API Error:', error);
+        console.error('❌ Error response:', error?.response);
+        toastify('Lỗi khi lấy thống kê danh mục', 'error');
+        return [];
+    } finally {
+        this.loadingOrder = false;
+    }
+}
     },
 })

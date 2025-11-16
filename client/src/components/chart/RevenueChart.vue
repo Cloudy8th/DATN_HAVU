@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, watch, onMounted } from "vue";
+import { ref, reactive, watch, onMounted, computed } from "vue";
 import { useOrderStore } from "@/stores/order";
 import { storeToRefs } from "pinia";
 import {
@@ -26,16 +26,49 @@ ChartJS.register(
   Legend
 );
 
+// ================= PINIA STORE =================
 const orderStore = useOrderStore();
 const { loadingOrder } = storeToRefs(orderStore);
 
-// Bộ lọc
-const timeRange = ref("day");
-const dateRange = ref([
-  new Date(new Date().setDate(new Date().getDate() - 7)),
-  new Date(),
-]);
+// ✅ FIX: Đảm bảo startDate < endDate
+const startDateRef = ref(new Date(new Date().setDate(new Date().getDate() - 7)));
+const endDateRef = ref(new Date());
 
+// ✅ Computed để đảm bảo thứ tự đúng
+const validStartDate = computed(() => {
+  const start = startDateRef.value;
+  const end = endDateRef.value;
+  if (start && end && start > end) {
+    console.warn('⚠️ Start date > End date, swapping...');
+    return end;
+  }
+  return start;
+});
+
+const validEndDate = computed(() => {
+  const start = startDateRef.value;
+  const end = endDateRef.value;
+  if (start && end && start > end) {
+    return start;
+  }
+  return end;
+});
+
+// ================= FORMAT DATE =================
+const formatTimestamp = (date) => {
+  if (!date) return null;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day} 00:00:00`;
+};
+
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
+};
+
+// ================= CHART DATA =================
 const chartData = reactive({
   labels: [],
   datasets: [
@@ -89,93 +122,83 @@ const chartOptions = ref({
   }
 });
 
-const formatTimestamp = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day} 00:00:00`;
-};
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}`;
-};
-
+// ================= FETCH DATA =================
 const fetchRevenueData = async () => {
-  if (!dateRange.value || dateRange.value.length < 2) {
+  if (!validStartDate.value || !validEndDate.value) {
     console.warn('⚠️ Chưa chọn khoảng thời gian');
     return;
   }
 
-  const startDate = formatTimestamp(dateRange.value[0]);
-  const endDate = formatTimestamp(dateRange.value[1]);
+  // ✅ Sử dụng validStartDate và validEndDate
+  const startDate = formatTimestamp(validStartDate.value);
+  const endDate = formatTimestamp(validEndDate.value);
 
   console.log('🔍 Fetching revenue data...');
-  console.log('Start:', startDate);
-  console.log('End:', endDate);
+  console.log('Start:', startDate, '(', validStartDate.value, ')');
+  console.log('End:', endDate, '(', validEndDate.value, ')');
 
   try {
-    let statsData;
+    let statsData = await orderStore.fetchDailyStats(startDate, endDate);
+    console.log('✅ Daily stats:', statsData);
     
-    if (timeRange.value === "day") {
-      statsData = await orderStore.fetchDailyStats(startDate, endDate);
-      console.log('✅ Daily stats:', statsData);
-      
-      if (statsData && statsData.length > 0) {
-        chartData.labels = statsData.map(item => formatDate(item.date));
-        chartData.datasets[0].data = statsData.map(item => item.totalMoney || 0);
-      } else {
-        console.warn('⚠️ Không có dữ liệu');
-        chartData.labels = [];
-        chartData.datasets[0].data = [];
-      }
-    } else if (timeRange.value === "week") {
-      statsData = await orderStore.fetchWeeklyStats(startDate, endDate);
-      console.log('✅ Weekly stats:', statsData);
-      
-      if (statsData && statsData.length > 0) {
-        chartData.labels = statsData.map(item => `Tuần ${item.week}`);
-        chartData.datasets[0].data = statsData.map(item => item.totalMoney || 0);
-      } else {
-        console.warn('⚠️ Không có dữ liệu');
-        chartData.labels = [];
-        chartData.datasets[0].data = [];
-      }
+    if (statsData && statsData.length > 0) {
+      chartData.labels = statsData.map(item => formatDate(item.date));
+      chartData.datasets[0].data = statsData.map(item => item.totalMoney || 0);
+      console.log('📊 Chart labels:', chartData.labels);
+      console.log('📊 Chart data:', chartData.datasets[0].data);
+    } else {
+      console.warn('⚠️ Không có dữ liệu');
+      chartData.labels = [];
+      chartData.datasets[0].data = [];
     }
   } catch (error) {
     console.error("❌ Error:", error);
+    chartData.labels = [];
+    chartData.datasets[0].data = [];
   }
 };
 
-watch([timeRange, dateRange], fetchRevenueData, { deep: true });
-
-onMounted(() => {
-  fetchRevenueData();
-});
+// ================= WATCH & MOUNT =================
+watch([startDateRef, endDateRef], fetchRevenueData, { deep: true });
+onMounted(() => fetchRevenueData());
 </script>
 
 <template>
   <div class="revenue-chart-wrapper">
     <div class="chart-header">
       <h3>📈 Thống kê doanh thu</h3>
-      <div class="filters">
-        <select v-model="timeRange" class="time-range-select">
-          <option value="day">Theo ngày</option>
-          <option value="week">Theo tuần</option>
-        </select>
-        <VueDatePicker 
-          v-model="dateRange" 
-          range 
-          placeholder="Chọn khoảng thời gian"
-          format="dd/MM/yyyy"
-          :enable-time-picker="false"
-          auto-apply
-        />
+      
+      <!-- Hàng 2: Date Picker -->
+      <div class="chart-controls">
+        <div class="date-range-group">
+          <label class="date-label">Chọn ngày:</label>
+          
+          <VueDatePicker 
+            v-model="startDateRef"
+            placeholder="Ngày bắt đầu"
+            format="dd/MM/yyyy"
+            :enable-time-picker="false"
+            :max-date="endDateRef"
+            auto-apply
+            class="compact-date-input"
+          />
+          
+          <VueDatePicker 
+            v-model="endDateRef"
+            placeholder="Ngày kết thúc"
+            format="dd/MM/yyyy"
+            :enable-time-picker="false"
+            :min-date="startDateRef"
+            auto-apply
+            class="compact-date-input"
+          />
+        </div>
       </div>
     </div>
 
     <div class="loading" v-if="loadingOrder">
-      <spinner-loader />
+      <div class="spinner"></div>
+      <p>Đang tải dữ liệu...</p>
     </div>
 
     <div class="chart-container" v-if="!loadingOrder && chartData.datasets[0].data.length > 0">
@@ -195,7 +218,6 @@ onMounted(() => {
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
-  width: 70%;
 }
 
 .chart-header {
@@ -220,30 +242,49 @@ onMounted(() => {
   align-items: center;
 }
 
-.time-range-select {
-  padding: 8px 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 14px;
-  outline: none;
-  cursor: pointer;
-  background: white;
+.date-range-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.time-range-select:focus {
-  border-color: #3b82f6;
+.date-label {
+  font-weight: 500;
+  color: #1f2937;
+}
+
+.compact-date-input {
+  max-width: 140px;
+  height: 38px;
 }
 
 .loading {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 300px;
+  color: #6b7280;
+  gap: 12px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f4f6;
+  border-top-color: #3b82f6;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .chart-container {
-  height: 500px;
+  height: 400px;
   position: relative;
+  margin-top: 20px;
 }
 
 .no-data {
