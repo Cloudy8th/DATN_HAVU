@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import com.project.tmartweb.application.responses.CategorySalesStatistical;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
@@ -185,6 +185,21 @@ public class OrdersController {
         Timestamp start = parseTimestamp(startDate);
         Timestamp end = parseTimestamp(endDate);
         return ResponseEntity.status(HttpStatus.OK).body(orderService.getProductSalesStats(start, end));
+    }
+
+    @GetMapping("/stats/categories")
+    @PreAuthorize("hasRole('ADMIN')") // Đảm bảo role ADMIN
+    public ResponseEntity<List<CategorySalesStatistical>> getCategorySalesStats(
+            @RequestParam(name = "startDate", required = false) String startDate,
+            @RequestParam(name = "endDate", required = false) String endDate
+    ) {
+        // FIX: Sử dụng hàm parseTimestamp để tránh lỗi 500
+        Timestamp start = parseTimestamp(startDate);
+        Timestamp end = parseTimestamp(endDate);
+
+        List<CategorySalesStatistical> result = orderService.getCategorySalesStats(start, end);
+
+        return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/export/{orderId}")

@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import com.project.tmartweb.application.responses.RevenueByDate;
 import com.project.tmartweb.application.responses.RevenueByWeek;
 import com.project.tmartweb.application.responses.ProductSalesStatistical;
+import com.project.tmartweb.application.responses.CategorySalesStatistical;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
@@ -36,6 +37,8 @@ public interface IOrderService extends IBaseService<Order, OrderDTO, UUID> {
     List<RevenueByWeek> getWeeklyStats(Timestamp startDate, Timestamp endDate);
 
     List<ProductSalesStatistical> getProductSalesStats(Timestamp startDate, Timestamp endDate);
+
+    List<CategorySalesStatistical> getCategorySalesStats(Timestamp startDate, Timestamp endDate);
 
     void sendMailCreateOrder(Order order);
 

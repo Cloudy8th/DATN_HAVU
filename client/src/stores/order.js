@@ -22,7 +22,8 @@ export const useOrderStore = defineStore('order', {
         dailyStats: [],
         weeklyStats: [],
         monthlyStats: [],
-        productSalesStats: []
+        productSalesStats: [],
+        categorySalesStats: []
     }),
     getters: {},
     actions: {
@@ -302,6 +303,22 @@ export const useOrderStore = defineStore('order', {
             } catch (error) {
                 toastify('Lỗi khi lấy thống kê sản phẩm', 'error');
                 console.error(error);
+                return [];
+            } finally {
+                this.loadingOrder = false;
+            }
+        },
+
+        async fetchCategorySalesStats(startDate, endDate) {
+            try {
+                this.loadingOrder = true;
+                const res = await orderService.getCategorySalesStats(startDate, endDate);
+                if (res.status === 200) {
+                    this.categorySalesStats = res.data;
+                    return res.data;
+                }
+            } catch (error) {
+                // ... (xử lý lỗi)
                 return [];
             } finally {
                 this.loadingOrder = false;

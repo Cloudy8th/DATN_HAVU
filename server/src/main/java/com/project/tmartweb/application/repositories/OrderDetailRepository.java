@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import com.project.tmartweb.application.responses.ProductSalesStatistical;
+import com.project.tmartweb.application.responses.CategorySalesStatistical; // Bổ sung import mới
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.UUID;
@@ -43,6 +44,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
             @Param("endDate") Timestamp endDate
     );
 
+
     // ✅ FIX: Tính tổng số lượng đã bán của 1 sản phẩm (chỉ tính đơn hàng đã giao)
     @Query("""
         SELECT SUM(od.quantity) 
@@ -52,4 +54,30 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, UUID> 
           AND o.status = com.project.tmartweb.domain.enums.OrderStatus.SHIPPED
     """)
     Long sumSoldQuantityByProduct(@Param("product") Product product);
+
+
+    /**
+     * ============ QUERY MỚI: Thống kê theo DANH MỤC (Category) ============
+     * Dùng để đồng bộ dữ liệu Biểu đồ sản phẩm.
+     */
+    @Query("""
+        SELECT NEW com.project.tmartweb.application.responses.CategorySalesStatistical(
+            c.id, 
+            c.name, 
+            CAST(SUM(od.quantity) AS long), 
+            CAST(SUM(od.totalMoney) AS double)
+        )
+        FROM OrderDetail od 
+        JOIN od.product p 
+        JOIN p.category c  
+        JOIN od.order o
+        WHERE o.status = com.project.tmartweb.domain.enums.OrderStatus.SHIPPED
+          AND o.createdAt BETWEEN :startDate AND :endDate
+        GROUP BY c.id, c.name 
+        ORDER BY SUM(od.quantity) DESC
+    """)
+    List<CategorySalesStatistical> statisticalByCategory(
+            @Param("startDate") Timestamp startDate,
+            @Param("endDate") Timestamp endDate
+    );
 }

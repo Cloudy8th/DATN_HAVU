@@ -73,6 +73,13 @@ class orderService extends baseService {
         });
         return res;
     }
+
+    async getCategorySalesStats(startDate, endDate) {
+        const res = await axios.get(`${this.endpoint}/stats/categories`, {
+            params: { startDate, endDate }
+        });
+        return res;
+    }
 }
 
 export default new orderService();

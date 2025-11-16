@@ -12,68 +12,54 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "vue-chartjs";
-import VueDatePicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
+import VueDatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
+// ================= PINIA STORE =================
 const orderStore = useOrderStore();
 const { loadingOrder } = storeToRefs(orderStore);
 
-/* ========================================
-   DANH MỤC SẢN PHẨM
-======================================== */
-const PRODUCT_CATEGORIES = [
-  "tai nghe", "chuột", "bàn phím", "camera", "máy tính bảng",
-  "linh kiện", "màn hình", "pc", "laptop", "điện thoại"
-];
-
-const CATEGORY_COLORS = {
-  "tai nghe": "#3b82f6",
-  "chuột": "#ef4444",
-  "bàn phím": "#10b981",
-  "camera": "#f59e0b",
-  "máy tính bảng": "#8b5cf6",
-  "linh kiện": "#ec4899",
-  "màn hình": "#06b6d4",
-  "pc": "#f97316",
-  "laptop": "#14b8a6",
-  "điện thoại": "#6366f1",
-};
-
-/* ========================================
-   THỜI GIAN LỌC (FILTER)
-======================================== */
+// ================= FILTER TIME =================
 const timeRange = ref("day");
 const dateRange = ref([
   new Date(new Date().setDate(new Date().getDate() - 7)),
   new Date(),
 ]);
 
-// Hàm sinh start/end ngày
+// Tự tính lại ngày khi đổi filter
 const calculateDateRange = (filter) => {
   const now = new Date();
   let start = new Date(now);
 
-  if (filter === "day") {
-    start.setHours(0, 0, 0, 0);
-  } else if (filter === "week") {
-    start.setDate(now.getDate() - 7);
-  } else if (filter === "month") {
-    start.setDate(now.getDate() - 30);
-  }
+  if (filter === "day") start.setHours(0, 0, 0, 0);
+  else if (filter === "week") start.setDate(now.getDate() - 7);
+  else if (filter === "month") start.setDate(now.getDate() - 30);
 
   return [start, now];
 };
 
-// Tự đổi date theo filter
-watch(timeRange, (newFilter) => {
-  dateRange.value = calculateDateRange(newFilter);
+watch(timeRange, (newVal) => {
+  dateRange.value = calculateDateRange(newVal);
 });
 
-/* ========================================
-   CHART
-======================================== */
+// ================= FORMAT DATE =================
+const formatTimestamp = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day} 00:00:00`;
+};
+
+// ================= CHART DATA =================
 const chartData = reactive({
   labels: [],
   datasets: [],
@@ -90,37 +76,10 @@ const chartOptions = ref({
       },
     },
   },
-  scales: {
-    y: { beginAtZero: true, ticks: { stepSize: 1 } },
-  },
+  scales: { y: { beginAtZero: true } },
 });
 
-const formatTimestamp = (date) => {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day} 00:00:00`;
-};
-
-/* ========================================
-   PHÂN LOẠI SẢN PHẨM
-======================================== */
-const categorizeProduct = (productTitle) => {
-  const title = productTitle.toLowerCase();
-
-  for (const category of PRODUCT_CATEGORIES) {
-    if (title.includes(category)) return category;
-  }
-
-  const phoneBrands = ["iphone", "samsung", "xiaomi", "oppo", "realme", "vsmart", "mobile", "phone"];
-  if (phoneBrands.some((kw) => title.includes(kw))) return "điện thoại";
-
-  return "khác";
-};
-
-/* ========================================
-   FETCH DATA
-======================================== */
+// ================= FETCH DATA FROM DATABASE =================
 const fetchProductData = async () => {
   if (!dateRange.value || dateRange.value.length < 2) return;
 
@@ -128,7 +87,8 @@ const fetchProductData = async () => {
   const endDate = formatTimestamp(dateRange.value[1]);
 
   try {
-    const statsData = await orderStore.fetchProductSalesStats(startDate, endDate);
+    // 🎯 GỌI API MỚI: LẤY THỐNG KÊ THEO DANH MỤC
+    const statsData = await orderStore.fetchCategorySalesStats(startDate, endDate);
 
     if (!statsData || statsData.length === 0) {
       chartData.labels = [];
@@ -136,50 +96,43 @@ const fetchProductData = async () => {
       return;
     }
 
-    const categoryData = {};
-    PRODUCT_CATEGORIES.forEach((cat) => (categoryData[cat] = 0));
+    // ================= BUILD DATA DIRECTLY FROM DATABASE =================
+    chartData.labels = statsData.map((item) => item.categoryName);
 
-    statsData.forEach((item) => {
-      const category = categorizeProduct(item.productTitle);
-      if (category !== "khác") {
-        categoryData[category] += item.totalQuantitySold || 0;
-      }
-    });
-
-    chartData.labels = PRODUCT_CATEGORIES.map(
-      (cat) => cat.charAt(0).toUpperCase() + cat.slice(1)
+    // Tạo màu ngẫu nhiên nếu backend không có bảng màu
+    const colors = statsData.map(
+      () => "#" + Math.floor(Math.random() * 16777215).toString(16)
     );
 
     chartData.datasets = [
       {
         label: "Số lượng bán",
-        backgroundColor: Object.values(CATEGORY_COLORS),
-        data: PRODUCT_CATEGORIES.map((cat) => categoryData[cat]),
+        backgroundColor: colors,
+        data: statsData.map((item) => item.totalQuantitySold || 0),
         borderRadius: 4,
       },
     ];
-  } catch (error) {
-    console.error("❌ Lỗi fetch thống kê:", error);
+  } catch (err) {
+    console.error("❌ Lỗi khi fetch thống kê theo danh mục:", err);
   }
 };
 
 watch([timeRange, dateRange], fetchProductData, { deep: true });
+
 onMounted(() => fetchProductData());
 </script>
 
 <template>
   <div class="product-chart-wrapper">
     <div class="chart-header">
-      <h3>📦 Thống kê số lượng hàng hóa bán</h3>
+      <h3>📦 Thống kê số lượng hàng hóa bán theo danh mục</h3>
 
       <div class="filters">
-        <div class="filter-inline">
-          <select v-model="timeRange" class="time-range-select">
-            <option value="day">Theo ngày</option>
-            <option value="week">Theo tuần</option>
-            <option value="month">Theo tháng</option>
-          </select>
-        </div>
+        <select v-model="timeRange" class="time-range-select">
+          <option value="day">Theo ngày</option>
+          <option value="week">Theo tuần</option>
+          <option value="month">Theo tháng</option>
+        </select>
 
         <VueDatePicker
           v-model="dateRange"
@@ -193,11 +146,11 @@ onMounted(() => fetchProductData());
       </div>
     </div>
 
-    <div class="loading" v-if="loadingOrder">
+    <div v-if="loadingOrder" class="loading">
       <spinner-loader />
     </div>
 
-    <div class="chart-container" v-if="!loadingOrder && chartData.datasets.length > 0">
+    <div v-if="!loadingOrder && chartData.datasets.length > 0" class="chart-container">
       <Bar :options="chartOptions" :data="chartData" />
     </div>
 
@@ -213,30 +166,17 @@ onMounted(() => fetchProductData());
   border-radius: 8px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
-  display: flex;
-  flex-direction: column;
-  height: 100%;
 }
 
 .chart-container {
-  flex: 1;
   min-height: 400px;
   position: relative;
 }
 
-/* FILTER UI */
 .filters {
   display: flex;
   gap: 12px;
   align-items: center;
-  flex-wrap: wrap;
-}
-
-.filter-inline {
-  display: flex;
-  align-items: center;
-  gap: 6px;
 }
 
 .time-range-select {
@@ -250,12 +190,5 @@ onMounted(() => fetchProductData());
 
 .date-picker-compact {
   max-width: 260px;
-}
-
-@media (max-width: 480px) {
-  .filters {
-    flex-direction: column;
-    align-items: stretch;
-  }
 }
 </style>

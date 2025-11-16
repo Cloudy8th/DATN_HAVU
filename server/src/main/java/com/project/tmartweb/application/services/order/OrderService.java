@@ -32,6 +32,7 @@ import org.springframework.util.ObjectUtils;
 import com.project.tmartweb.application.responses.RevenueByDate;
 import com.project.tmartweb.application.responses.RevenueByWeek;
 import com.project.tmartweb.application.responses.ProductSalesStatistical;
+import com.project.tmartweb.application.responses.CategorySalesStatistical;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
@@ -292,6 +293,11 @@ public class OrderService implements IOrderService {
     public List<ProductSalesStatistical> getProductSalesStats(Timestamp startDate, Timestamp endDate) {
         // PhÆ°Æ¡ng thá»©c nÃ y náº±m á»Ÿ OrderDetailRepository
         return orderDetailRepository.statisticalByProduct(startDate, endDate);
+    }
+
+    @Override
+    public List<CategorySalesStatistical> getCategorySalesStats(Timestamp startDate, Timestamp endDate) {
+        return orderDetailRepository.statisticalByCategory(startDate, endDate);
     }
 
     @Override
